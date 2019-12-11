@@ -1,0 +1,7 @@
+function(SetCppVersionOfTarget target)
+    if(BUILD_CXX_20)
+        target_compile_features(${target} PUBLIC cxx_std_20)
+    else()
+        target_compile_features(${target} PUBLIC cxx_std_17)
+    endif()
+endfunction()
