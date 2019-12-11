@@ -21,6 +21,9 @@ include(target_source_local)
 # declare options
 option(BUILD_TESTING "Build tests" OFF)
 option(BUILD_CXX_20 "C++20" OFF)
+option(GIT_SUBMODULE "Check submodules during build" ON)
+set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+set(ASSETS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data")
 
 # get git submodules
 GitSubmodule()

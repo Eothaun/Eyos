@@ -24,12 +24,11 @@ target_include_directories(Engine
     PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/enet/include>
 )
-
 set_target_properties( Engine
     PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/libs"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/libs"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/bin"
 )
 
 if(WIN32)
