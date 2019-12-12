@@ -1,0 +1,11 @@
+﻿---
+BasedOnStyle: Google
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'true'
+AlignOperands: 'true'
+AlignTrailingComments: 'true'
+AllowAllArgumentsOnNextLine: 'true'
+AllowAllConstructorInitializersOnNextLine: 'true'
+
+...

@@ -1,9 +1,8 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.13)
 # declare project
 project(Eyos VERSION 0.0.1 DESCRIPTION "Yet another student RTS"  LANGUAGES CXX)
 
-#define global warning settings
-
+#define global warning settings this will be for all projects! If one spscific target shall only have something see target ... cmake folder!
 if(MSVC)
 add_compile_options(/W3)
 else()
@@ -11,18 +10,25 @@ add_compile_options(-W -Wall)
 endif()
 
 # add module path to CMAKE_MODULE_PATH
-list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/finders")
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/targets")
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/utils")
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/third_party/Catch2/contrib")
 
 # insert modules
 include(SetCppVersionOfTarget)
 include(GitSubmodule)
 include(target_source_local)
+include(ClangFormat)
 
 # declare options
 option(BUILD_TESTING "Build tests" OFF)
+option(BUILD_WITH_CALNG_FORMAT "Build with clang format" OFF)
 option(BUILD_CXX_20 "C++20" OFF)
 option(GIT_SUBMODULE "Check submodules during build" ON)
+
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+set(THIRD_PARTY "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
 set(ASSETS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data")
 
 # get git submodules
@@ -33,9 +39,14 @@ add_subdirectory(third_party)
 
 # include source directories
 add_subdirectory(src)
-
-
-if(BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
+    message(STATUS "TESTING ON")
     enable_testing()
     add_subdirectory(tests)
+else()
+      message(STATUS "TESTING OFF")
+endif()
+
+if(BUILD_WITH_CALNG_FORMAT)
+    target_clangformat_setup(Eyos)
 endif()

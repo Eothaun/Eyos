@@ -1,7 +1,8 @@
 add_executable(Eyos)
 add_executable(Eyos::Eyos ALIAS Eyos)
 
-include(EyosSourceList)
+# include target source list
+include(TargetEyosSourceList)
 
 target_include_directories(Eyos
     PRIVATE 

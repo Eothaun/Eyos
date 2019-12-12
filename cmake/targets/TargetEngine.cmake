@@ -1,6 +1,7 @@
 add_library(Engine SHARED)
 
-include(EngineSourceList)
+# include target source list
+include(TargetEngineSourceList)
 
 add_library(Engine::Engine ALIAS Engine)
 
@@ -24,6 +25,7 @@ target_include_directories(Engine
     PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/enet/include>
 )
+
 set_target_properties( Engine
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/libs"

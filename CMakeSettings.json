@@ -10,7 +10,23 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
-      "variables": []
+      "variables": [
+        {
+          "name": "CATCH_BUILD_TESTING",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "CATCH_INSTALL_DOCS",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "CATCH_INSTALL_HELPERS",
+          "value": "False",
+          "type": "BOOL"
+        }
+      ]
     }
   ]
 }

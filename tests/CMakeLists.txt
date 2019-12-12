@@ -1,0 +1,7 @@
+find_package(Catch2 REQUIRED)
+add_executable(Tests my_test.cpp)
+target_link_libraries(Tests Catch2)
+include(CTest)
+include(Catch)
+catch_discover_tests(Tests)
+message(STATUS Added tests)
