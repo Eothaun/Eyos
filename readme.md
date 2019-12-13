@@ -40,6 +40,8 @@ You will see the tests.
 
 In Visual Studios you can modify the `CMakeSettings.json` file this will allow you to change rules in the `CMakeLists.txt` without changing it. (**This can be a source of error as well. Be aware!**)
 
+Please download the [Clang Format VS Extension](https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.ClangFormat)
+
 ## Dependencies
 
 - [ENet](https://github.com/lsalzman/enet)
