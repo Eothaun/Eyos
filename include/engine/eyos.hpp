@@ -1,6 +1,7 @@
 #pragma once
-#undef BUILD_SHARED_LIBS
 #include <engine/Defines.hpp>
+
+
 namespace eyos {
 EYOS_API int calculate_value();
 EYOS_API float calculate_float();
