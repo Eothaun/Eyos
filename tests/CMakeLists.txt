@@ -1,4 +1,4 @@
-find_package(Catch2 REQUIRED)
+#find_package(Catch2 REQUIRED)
 add_executable(Tests my_test.cpp)
 target_link_libraries(Tests Catch2)
 include(CTest)

@@ -5,13 +5,13 @@ include(TargetEngineSourceList)
 
 add_library(Engine::Engine ALIAS Engine)
 
-find_package(glm 0.9.9 REQUIRED)
+
 target_link_libraries(Engine 
     PUBLIC
     glm
 )
 
-find_package(enet 1.3.14 REQUIRED)
+
 
 target_link_libraries(Engine 
     PUBLIC
