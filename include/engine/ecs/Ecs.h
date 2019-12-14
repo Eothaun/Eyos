@@ -1,6 +1,9 @@
 #pragma once
 #include <type_traits>
 #include <cassert>
+#include <tuple>
+#include <vector>
+#include <unordered_map>
 
 #include "EntityId.h"
 #include "MTP_Utils.h"
