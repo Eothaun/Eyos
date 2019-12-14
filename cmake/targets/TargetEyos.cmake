@@ -4,6 +4,20 @@ add_executable(Eyos::Eyos ALIAS Eyos)
 # include target source list
 include(TargetEyosSourceList)
 
+option(USE_PREBUILT_BGFX_TOOLS "If on, uses the .exe's in {EYOS_SOURCE_DIR}/tools for geometryc and shaderc, otherwise it will be compiled from source" ON)
+if(USE_PREBUILT_BGFX_TOOLS)
+set(TOOL_GEOMETRYC_EXE ${PROJECT_SOURCE_DIR}/tools/geometryc.exe)
+set(TOOL_SHADERC_EXE ${PROJECT_SOURCE_DIR}/tools/shaderc.exe)
+set(TOOL_TEXTUREC_EXE ${PROJECT_SOURCE_DIR}/tools/texturec.exe)
+set(TOOL_TEXTUREV_EXE ${PROJECT_SOURCE_DIR}/tools/texturev.exe)
+else()
+set(TOOL_GEOMETRYC_EXE $<TARGET_FILE:geometryc>)
+set(TOOL_SHADERC_EXE $<TARGET_FILE:shaderc>)
+set(TOOL_TEXTUREC_EXE $<TARGET_FILE:texturec>)
+set(TOOL_TEXTUREV_EXE $<TARGET_FILE:texturev>)
+endif(USE_PREBUILT_BGFX_TOOLS)
+
+
 # add_eyos_shader(<FILE>)
 # 
 # === Brief:
@@ -112,7 +126,7 @@ function( add_eyos_shader FILE )
 
 		foreach( OUT ${OUTPUTS} )
 			list( APPEND OUTPUT_FILES ${${OUT}_OUTPUT} )
-			list( APPEND COMMANDS COMMAND "$<TARGET_FILE:shaderc>" ${${OUT}} )
+			list( APPEND COMMANDS COMMAND "${TOOL_SHADERC_EXE}" ${${OUT}} )
 			get_filename_component( OUT_DIR ${${OUT}_OUTPUT} DIRECTORY )
 			file( MAKE_DIRECTORY ${OUT_DIR} )
 		endforeach()
@@ -163,7 +177,7 @@ function(add_eyos_mesh FILE)
 		OUTPUT
 		${ABS_BIN_FILE}
 		COMMAND
-		"$<TARGET_FILE:geometryc>" "-f" "${ABS_INPUT_FILE}" "-o" "${ABS_BIN_FILE}"
+		"${TOOL_GEOMETRYC_EXE}" "-f" "${ABS_INPUT_FILE}" "-o" "${ABS_BIN_FILE}"
 		COMMENT "Compiling .obj model ${FILE} to ${BIN_FILE}"
 	)
 endfunction(add_eyos_mesh)
@@ -183,7 +197,7 @@ endforeach()
 file(GLOB_RECURSE SHADER_SRC_FILES_ABSOLUTE "${PROJECT_SOURCE_DIR}/data/shaders/*.sc")
 file(GLOB_RECURSE MESH_FILES_ABSOLUTE "${PROJECT_SOURCE_DIR}/data/*.obj")
 
-# Add source to this project's executable.
+# Add resource files to the project
 target_sources(Eyos PRIVATE ${SHADER_SRC_FILES_ABSOLUTE} ${MESH_FILES_ABSOLUTE})
 
 # We also have asset files which don't have to be processed, but just copied over:
@@ -191,6 +205,7 @@ file(COPY "${PROJECT_SOURCE_DIR}/data/fonts" DESTINATION "${PROJECT_SOURCE_DIR}/
 file(COPY "${PROJECT_SOURCE_DIR}/data/maps" DESTINATION "${PROJECT_SOURCE_DIR}/build")
 file(COPY "${PROJECT_SOURCE_DIR}/data/textures" DESTINATION "${PROJECT_SOURCE_DIR}/build")
 
+# Add source to this project's executable.
 target_include_directories(Eyos
     PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}
