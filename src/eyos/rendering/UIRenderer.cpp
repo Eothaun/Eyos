@@ -50,9 +50,9 @@ namespace eyos {
 
 		textBufferManager->destroyTextBuffer(transientTextBuffer);
 
-
-		bgfx::destroy(vtxBufferHandle);
-		bgfx::destroy(idxBufferHandle);
+		// They are already destroyed in Render()
+		//bgfx::destroy(vtxBufferHandle);
+		//bgfx::destroy(idxBufferHandle);
 
 		bgfx::destroy(textureUniform);
 		bgfx::destroy(shaderProgram);

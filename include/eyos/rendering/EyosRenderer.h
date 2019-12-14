@@ -20,16 +20,16 @@ namespace eyos
 		void Render();
 		bool Shutdown();
 
+	public:
+		uint32_t m_debug;
+		uint32_t m_reset;
+
 	private:
 		std::unique_ptr<DebugRenderer> debugRenderer;
 		std::unique_ptr<UIRenderer> uiRenderer;
 
-		entry::MouseState m_mouseState;
-
 		uint32_t m_width;
 		uint32_t m_height;
-		uint32_t m_debug;
-		uint32_t m_reset;
 		bgfx::VertexBufferHandle m_vbh;
 		bgfx::IndexBufferHandle  m_ibh;
 		bgfx::ProgramHandle m_program;
