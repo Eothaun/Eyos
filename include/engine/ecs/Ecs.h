@@ -4,6 +4,7 @@
 #include <tuple>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
 
 #include "EntityId.h"
 #include "MTP_Utils.h"
