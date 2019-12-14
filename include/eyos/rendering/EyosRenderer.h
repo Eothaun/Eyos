@@ -10,7 +10,7 @@
 #include "UIRenderer.h"
 
 
-namespace Eyos
+namespace eyos
 {
 	class Renderer {
 	public:

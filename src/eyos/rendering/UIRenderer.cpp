@@ -1,14 +1,14 @@
-#include "eyos/UIRenderer.h"
+#include "eyos/rendering/UIRenderer.h"
 #include <cassert>
 #include <numeric>
 #include <array>
 
-#include "eyos/VertexLayouts.h"
+#include "eyos/rendering/VertexLayouts.h"
 #include "entry/entry.h"
 #include <bx\timer.h>
 
 
-namespace Eyos {
+namespace eyos {
 	UI::Widget::~Widget() = default;
 
 	static TrueTypeHandle loadTtf(FontManager* _fm, const char* _filePath)

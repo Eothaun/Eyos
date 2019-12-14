@@ -10,7 +10,7 @@
 #include "font/text_buffer_manager.h"
 
 
-namespace Eyos {
+namespace eyos {
 	class UIRenderer;
 
 	namespace UI {

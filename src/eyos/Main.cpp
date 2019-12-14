@@ -4,7 +4,7 @@
 #include "bgfx_utils.h"
 #include <entry\entry.h>
 
-#include "eyos/EyosRenderer.h"
+#include "eyos/rendering/EyosRenderer.h"
 
 static void WaitForEnter()
 {
@@ -19,7 +19,7 @@ int _main_(int _argc, char** _argv)
 	int width = 1280;
 	int height = 720;
 
-	std::unique_ptr<Eyos::Renderer> renderer{ new Eyos::Renderer() };
+	std::unique_ptr<eyos::Renderer> renderer{ new eyos::Renderer() };
 	if (!renderer->Init(_argc, _argv, width, height)) {
 		std::cerr << "Failed to initialize!" << std::endl;
 		return 1;

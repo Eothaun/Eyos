@@ -7,7 +7,7 @@
 #include "VertexLayouts.h"
 
 
-namespace Eyos 
+namespace eyos
 {
 	class DebugRenderer {
 	public:

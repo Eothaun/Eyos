@@ -1,11 +1,11 @@
-#include "Eyos/DebugRenderer.h"
+#include "eyos/rendering/DebugRenderer.h"
 
 #include <array>
 #include <numeric>
 
 
 
-namespace Eyos 
+namespace eyos
 {
 	DebugRenderer::DebugRenderer() {
 		shaderProgram = loadProgram("cubes/vs_cubes", "cubes/fs_cubes");

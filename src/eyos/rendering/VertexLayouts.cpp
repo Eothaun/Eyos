@@ -1,6 +1,6 @@
-#include "eyos/VertexLayouts.h"
+#include "eyos/rendering/VertexLayouts.h"
 
-namespace Eyos 
+namespace eyos 
 {
 	bgfx::VertexLayout PosColorVertex::ms_layout;
 	bgfx::VertexLayout PosColorUvVertex::ms_layout;

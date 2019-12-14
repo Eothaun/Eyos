@@ -1,7 +1,7 @@
 #pragma once
 #include "bgfx_utils.h"
 
-namespace Eyos {
+namespace eyos {
 	struct PosColorVertex
 	{
 		float m_x;

@@ -1,7 +1,7 @@
 ﻿// EyosRenderer.cpp : Defines the entry point for the application.
 //
 
-#include "eyos/EyosRenderer.h"
+#include "eyos/rendering/EyosRenderer.h"
 
 #include <stdio.h>
 #include <type_traits>
@@ -14,9 +14,9 @@
 #include <imgui\imgui.h>
 #include <bx\timer.h>
 
-#include "eyos/VertexLayouts.h"
+#include "eyos/rendering/VertexLayouts.h"
 
-namespace Eyos {
+namespace eyos {
 	static PosColorVertex s_cubeVertices[8] =
 	{
 		{-1.0f,  1.0f,  1.0f, 0xff000000 },
