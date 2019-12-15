@@ -3,7 +3,9 @@
 
 namespace eyos {
 	struct Material {
-		glm::vec4 color;
-		bgfx::TextureHandle texture;
+		Material() = default;
+
+		glm::vec4 color{ 1.f, 1.f, 1.f, 1.f };
+		bgfx::TextureHandle texture{bgfx::kInvalidHandle};
 	};
 }

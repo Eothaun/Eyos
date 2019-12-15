@@ -42,6 +42,7 @@ namespace eyos
 		bgfx::ProgramHandle m_program;
 
 		bgfx::UniformHandle u_time;
+		bgfx::UniformHandle u_color0;
 		bgfx::ProgramHandle meshShaderProgram;
 
 		int64_t m_timeOffset;

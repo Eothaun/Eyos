@@ -95,6 +95,7 @@ namespace eyos {
 		meshShaderProgram = loadProgram("mesh/vs_mesh", "mesh/fs_mesh");
 		
 		u_time = bgfx::createUniform("u_time", bgfx::UniformType::Vec4);
+		u_color0 = bgfx::createUniform("u_color0", bgfx::UniformType::Vec4);
 
 		//bimg::ImageContainer* heightmap = imageLoad("maps/heightmap.png", bgfx::TextureFormat::RGBA8U);
 
@@ -220,6 +221,13 @@ namespace eyos {
 			//TODO: Make a get_unchecked function on the ECS
 			auto& transform = ecs.Get<rendering_components::Transform>(id);
 			auto& model = ecs.Get<rendering_components::Model3D>(id);
+			
+			if (model.material) {
+				bgfx::setUniform(u_color0, &model.material->color);
+			} else {
+				glm::vec4 defaultColor{ 1.0, 1.0, 1.0, 1.0 };
+				bgfx::setUniform(u_color0, &defaultColor);
+			}
 
 			for (GroupArray::const_iterator it = model.mesh->m_groups.begin(), itEnd = model.mesh->m_groups.end(); it != itEnd; ++it)
 			{
