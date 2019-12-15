@@ -93,9 +93,7 @@ namespace eyos {
 		// Create program from shaders.
 		m_program = loadProgram("instancing/vs_instancing", "instancing/fs_instancing");
 		meshShaderProgram = loadProgram("mesh/vs_mesh", "mesh/fs_mesh");
-
-		bunnyMesh = meshLoad("meshes/Swordsman2.bin");
-
+		
 		u_time = bgfx::createUniform("u_time", bgfx::UniformType::Vec4);
 
 		//bimg::ImageContainer* heightmap = imageLoad("maps/heightmap.png", bgfx::TextureFormat::RGBA8U);
@@ -158,39 +156,8 @@ namespace eyos {
 			bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height));
 		}
 
+		RenderModels(ecs);
 		RenderInstancedModels(ecs);
-			
-		for (GroupArray::const_iterator it = bunnyMesh->m_groups.begin(), itEnd = bunnyMesh->m_groups.end(); it != itEnd; ++it)
-		{
-			const Group& group = *it;
-
-			bgfx::setIndexBuffer(group.m_ibh);
-			bgfx::setVertexBuffer(0, group.m_vbh);
-
-			float translationMatrix[16];
-			bx::mtxTranslate(translationMatrix, 0, -5, -25);
-			float timedRotation[16];
-			bx::mtxRotateXY(timedRotation, 3.14 / 2, time / 2.5f);
-			float scaleMatrix[16];
-			bx::mtxScale(scaleMatrix, 0.25);
-			float modelMatrix[16];
-			bx::mtxIdentity(modelMatrix);
-			bx::mtxMul(modelMatrix, modelMatrix, scaleMatrix);
-			bx::mtxMul(modelMatrix, modelMatrix, timedRotation);
-			bx::mtxMul(modelMatrix, modelMatrix, translationMatrix);
-
-			bgfx::setTransform(modelMatrix);
-			bgfx::setState((0
-				| BGFX_STATE_WRITE_RGB
-				| BGFX_STATE_WRITE_A
-				| BGFX_STATE_WRITE_Z
-				| BGFX_STATE_DEPTH_TEST_LESS
-				| BGFX_STATE_CULL_CCW
-				| BGFX_STATE_MSAA
-				));
-
-			bgfx::submit(0, meshShaderProgram, 0, it != itEnd - 1);
-		}
 
 		uiRenderer->Render();
 
@@ -246,7 +213,47 @@ namespace eyos {
 	}
 
 	void Renderer::RenderModels(EyosEcs& ecs) {
+		float time = (float)((bx::getHPCounter() - m_timeOffset) / double(bx::getHPFrequency()));
 
+		std::vector<EntityId> entityModels = ecs.QueryEntities<rendering_components::Transform, rendering_components::Model3D>();
+		for (EntityId id : entityModels) {
+			//TODO: Make a get_unchecked function on the ECS
+			auto& transform = ecs.Get<rendering_components::Transform>(id);
+			auto& model = ecs.Get<rendering_components::Model3D>(id);
+
+			for (GroupArray::const_iterator it = model.mesh->m_groups.begin(), itEnd = model.mesh->m_groups.end(); it != itEnd; ++it)
+			{
+				const Group& group = *it;
+
+				bgfx::setIndexBuffer(group.m_ibh);
+				bgfx::setVertexBuffer(0, group.m_vbh);
+
+				/*float translationMatrix[16];
+				bx::mtxTranslate(translationMatrix, 0, -5, -25);
+				float timedRotation[16];
+				bx::mtxRotateXY(timedRotation, 3.14 / 2, time / 2.5f);
+				float scaleMatrix[16];
+				bx::mtxScale(scaleMatrix, 0.25);
+				float modelMatrix[16];
+				bx::mtxIdentity(modelMatrix);*/
+				//bx::mtxMul(modelMatrix, modelMatrix, timedRotation);
+				//bx::mtxMul(modelMatrix, modelMatrix, translationMatrix);
+				//bx::mtxMul(modelMatrix, modelMatrix, scaleMatrix);
+				glm::mat4 modelMatrix = transform.GetModelMatrix();
+
+				bgfx::setTransform(glm::value_ptr(modelMatrix));
+				bgfx::setState((0
+					| BGFX_STATE_WRITE_RGB
+					| BGFX_STATE_WRITE_A
+					| BGFX_STATE_WRITE_Z
+					| BGFX_STATE_DEPTH_TEST_LESS
+					| BGFX_STATE_CULL_CW
+					| BGFX_STATE_MSAA
+					));
+
+				bgfx::submit(0, meshShaderProgram, 0, it != itEnd - 1);
+			}
+		}
 	}
 
 	void Renderer::RenderInstancedModels(EyosEcs& ecs) {

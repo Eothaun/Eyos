@@ -41,7 +41,6 @@ namespace eyos
 		bgfx::IndexBufferHandle  m_ibh;
 		bgfx::ProgramHandle m_program;
 
-		Mesh* bunnyMesh;
 		bgfx::UniformHandle u_time;
 		bgfx::ProgramHandle meshShaderProgram;
 

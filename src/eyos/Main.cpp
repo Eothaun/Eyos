@@ -27,23 +27,6 @@ int _main_(int _argc, char** _argv)
 	uint32_t width = 1280;
 	uint32_t height = 720;
 
-	EyosEcs ecs{};
-
-	// Fill ecs for testing
-	{
-		EntityId model = ecs.CreateEntity();
-		ecs.Assign(model, cmps::Transform{ glm::vec3{0, 0, 0}, glm::quat{} });
-		ecs.Assign(model, cmps::Model3D{-1, -1});
-	}
-	{
-		EntityId model = ecs.CreateEntity();
-		ecs.Assign(model, cmps::Transform{ glm::vec3{5, 0, 0}, glm::quat{} });
-		ecs.Assign(model, cmps::Model3D{ -1, -1 });
-	}
-
-	Camera camera{};
-	camera.position = { 0, 2, -15 };
-	camera.rotation = glm::quat{ glm::vec3{0.0, 0.0, 0.0} };
 
 	entry::MouseState mouseState;
 	std::unique_ptr<eyos::Renderer> renderer{ new eyos::Renderer() };
@@ -55,6 +38,27 @@ int _main_(int _argc, char** _argv)
 
 	entry::WindowHandle defaultWindow = { 0 };
 	setWindowSize(defaultWindow, width, height);
+
+
+	EyosEcs ecs{};
+
+	// Fill ecs for testing
+	Mesh* bunnyMesh = meshLoad("meshes/Swordsman2.bin");
+	Material testMaterial{};
+	{
+		EntityId model = ecs.CreateEntity();
+		ecs.Assign(model, cmps::Transform{ glm::vec3{0, 0, 0}, glm::quat{ glm::vec3{} } });
+		ecs.Assign(model, cmps::Model3D{ bunnyMesh, &testMaterial });
+	}
+	{
+		EntityId model = ecs.CreateEntity();
+		ecs.Assign(model, cmps::Transform{ glm::vec3{25, 0, 0}, glm::quat{ glm::vec3{-3.14 / 2, 0, 0} }, glm::vec3{ 0.25f } });
+		ecs.Assign(model, cmps::Model3D{ bunnyMesh, &testMaterial });
+	}
+
+	Camera camera{};
+	camera.position = { 0, 12, 35 };
+	camera.rotation = glm::quat{ glm::vec3{0.0, 0.0, 0.0} };
 
 	while (true)
 	{
