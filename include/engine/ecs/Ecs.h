@@ -213,7 +213,7 @@ namespace eyos
 			constexpr uint16_t componentMask = CreateBitsetFromTypes<Ts...>();
 			for (EntityId::Index_t i = 0; i < entityAmount; ++i) {
 				if ((componentBitsets[i] & componentMask) == componentMask) {
-					entities.push_back(EntityId{ i, 0 });
+					entities.push_back(EntityId{ i, entityVersions[i] });
 				}
 			}
 
