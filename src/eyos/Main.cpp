@@ -6,8 +6,9 @@
 #include <imgui\imgui.h>
 
 #include "eyos/rendering/EyosRenderer.h"
-#include "engine/ecs/Ecs.h"
+#include "eyos/ClientEcsType.h"
 #include "eyos/rendering/Components.h"
+#include "eyos/rendering/Camera.h"
 
 namespace cmps = eyos::rendering_components;
 
@@ -19,12 +20,30 @@ static void WaitForEnter()
 
 int _main_(int _argc, char** _argv)
 {
+	using namespace eyos;
+
 	std::cout << "Hello CMake & BGFX :)\n";
 
 	uint32_t width = 1280;
 	uint32_t height = 720;
 
-	eyos::Ecs<cmps::Transform, cmps::Model3D> ecs{};
+	EyosEcs ecs{};
+
+	// Fill ecs for testing
+	{
+		EntityId model = ecs.CreateEntity();
+		ecs.Assign(model, cmps::Transform{ glm::vec3{0, 0, 0}, glm::quat{} });
+		ecs.Assign(model, cmps::Model3D{-1, -1});
+	}
+	{
+		EntityId model = ecs.CreateEntity();
+		ecs.Assign(model, cmps::Transform{ glm::vec3{5, 0, 0}, glm::quat{} });
+		ecs.Assign(model, cmps::Model3D{ -1, -1 });
+	}
+
+	Camera camera{};
+	camera.position = { 0, 2, -15 };
+	camera.rotation = glm::quat{ glm::vec3{0.0, 0.0, 0.0} };
 
 	entry::MouseState mouseState;
 	std::unique_ptr<eyos::Renderer> renderer{ new eyos::Renderer() };
@@ -44,6 +63,7 @@ int _main_(int _argc, char** _argv)
 		{
 			break;
 		}
+
 		imguiBeginFrame(mouseState.m_mx
 			, mouseState.m_my
 			, (mouseState.m_buttons[entry::MouseButton::Left] ? IMGUI_MBUT_LEFT : 0)
@@ -54,7 +74,15 @@ int _main_(int _argc, char** _argv)
 			, uint16_t(height)
 		);
 
-		renderer->Render();
+		ImGui::Begin("EyosRenderer ImGUI");
+		ImGui::Text("%s", "EyosRenderer Imgui Test");
+		ImGui::End();
+
+		camera.DoFreecamMovement(0.5f, 0.01f, mouseState);
+
+		imguiEndFrame();
+
+		renderer->Render(ecs, camera);
 	}
 
 	if (!renderer->Shutdown()) {

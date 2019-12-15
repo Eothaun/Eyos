@@ -8,17 +8,24 @@
 
 #include "DebugRenderer.h"
 #include "UIRenderer.h"
+#include "eyos/ClientEcsType.h"
 
 
 namespace eyos
 {
+	class Camera;
+
 	class Renderer {
 	public:
 		Renderer();
 
 		bool Init(uint32_t argc, char* argv[], uint32_t width, uint32_t height);
-		void Render();
+		void Render(EyosEcs& ecs, Camera& camera);
 		bool Shutdown();
+
+	private:
+		void RenderModels(EyosEcs& ecs);
+		void RenderInstancedModels(EyosEcs& ecs);
 
 	public:
 		uint32_t m_debug;

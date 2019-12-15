@@ -6,4 +6,5 @@ target_sources_local(Eyos
     eyos/rendering/DebugRenderer.cpp
     eyos/rendering/UIRenderer.cpp
     eyos/rendering/VertexLayouts.cpp
+    eyos/rendering/Camera.cpp
 )

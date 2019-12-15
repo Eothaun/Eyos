@@ -13,8 +13,10 @@
 #include <entry\entry.h>
 #include <imgui\imgui.h>
 #include <bx\timer.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "eyos/rendering/VertexLayouts.h"
+#include "eyos/rendering/Camera.h"
 
 namespace eyos {
 	static PosColorVertex s_cubeVertices[8] =
@@ -115,14 +117,8 @@ namespace eyos {
 		return true;
 	}
 
-	void Renderer::Render()
+	void Renderer::Render(EyosEcs& ecs, Camera& camera)
 	{
-		ImGui::Begin("EyosRenderer ImGUI");
-		ImGui::Text("%s", "EyosRenderer Imgui Test");
-		ImGui::End();
-
-		imguiEndFrame();
-
 		// Set view 0 default viewport.
 		bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height));
 
@@ -133,7 +129,6 @@ namespace eyos {
 		float time = (float)((bx::getHPCounter() - m_timeOffset) / double(bx::getHPFrequency()));
 		float zero = 0.0f;
 		bgfx::setUniform(u_time, &time);
-		//bgfx::setUniform(u_time, &time);
 
 		// Get renderer capabilities info.
 		const bgfx::Caps* caps = bgfx::getCaps();
@@ -149,66 +144,21 @@ namespace eyos {
 
 		// Set view and projection matrix for view 0.
 		{
-			float view[16];
-			bx::mtxLookAt(view, eye, at);
+			//float view[16];
+			//bx::mtxLookAt(view, eye, at);
 
-			float proj[16];
-			bx::mtxProj(proj, 60.0f, float(m_width) / float(m_height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-			bgfx::setViewTransform(0, view, proj);
+			//float proj[16];
+			//bx::mtxProj(proj, 60.0f, float(m_width) / float(m_height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
+			glm::mat4 view = camera.GetViewMatrix();
+			glm::mat4 proj = camera.GetProjectionMatrix(float(m_width) / float(m_height));
+
+			bgfx::setViewTransform(0, glm::value_ptr(view), glm::value_ptr(proj));
 
 			// Set view 0 default viewport.
 			bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height));
 		}
 
-
-
-		// 80 bytes stride = 64 bytes for 4x4 matrix + 16 bytes for RGBA color.
-		const uint16_t instanceStride = 80;
-		// 11x11 cubes
-		const uint32_t numInstances = 121;
-
-		if (numInstances == bgfx::getAvailInstanceDataBuffer(numInstances, instanceStride))
-		{
-			bgfx::InstanceDataBuffer idb;
-			bgfx::allocInstanceDataBuffer(&idb, numInstances, instanceStride);
-
-			uint8_t* data = idb.data;
-
-			// Write instance data for 11x11 cubes.
-			for (uint32_t yy = 0; yy < 11; ++yy)
-			{
-				for (uint32_t xx = 0; xx < 11; ++xx)
-				{
-					float* mtx = (float*)data;
-					bx::mtxRotateXY(mtx, time + xx * 0.21f, time + yy * 0.37f);
-					mtx[12] = -15.0f + float(xx) * 3.0f;
-					mtx[13] = -15.0f + float(yy) * 3.0f;
-					mtx[14] = 0.0f;
-
-					float* color = (float*)&data[64];
-					color[0] = bx::sin(time + float(xx) / 11.0f) * 0.5f + 0.5f;
-					color[1] = bx::cos(time + float(yy) / 11.0f) * 0.5f + 0.5f;
-					color[2] = bx::sin(time * 3.0f) * 0.5f + 0.5f;
-					color[3] = 1.0f;
-
-					data += instanceStride;
-				}
-			}
-
-			// Set vertex and index buffer.
-			bgfx::setVertexBuffer(0, m_vbh);
-			bgfx::setIndexBuffer(m_ibh);
-
-			// Set instance data buffer.
-			bgfx::setInstanceDataBuffer(&idb);
-
-			// Set render states.
-			bgfx::setState(BGFX_STATE_DEFAULT);
-
-			// Submit primitive for rendering to view 0.
-			bgfx::submit(0, m_program);
-
-		}
+		RenderInstancedModels(ecs);
 			
 		for (GroupArray::const_iterator it = bunnyMesh->m_groups.begin(), itEnd = bunnyMesh->m_groups.end(); it != itEnd; ++it)
 		{
@@ -293,5 +243,61 @@ namespace eyos {
 		bgfx::shutdown();
 
 		return true;
+	}
+
+	void Renderer::RenderModels(EyosEcs& ecs) {
+
+	}
+
+	void Renderer::RenderInstancedModels(EyosEcs& ecs) {
+		float time = 0;
+
+		// 80 bytes stride = 64 bytes for 4x4 matrix + 16 bytes for RGBA color.
+		const uint16_t instanceStride = 80;
+		// 11x11 cubes
+		const uint32_t numInstances = 121;
+
+		if (numInstances == bgfx::getAvailInstanceDataBuffer(numInstances, instanceStride))
+		{
+			bgfx::InstanceDataBuffer idb;
+			bgfx::allocInstanceDataBuffer(&idb, numInstances, instanceStride);
+
+			uint8_t* data = idb.data;
+
+			// Write instance data for 11x11 cubes.
+			for (uint32_t yy = 0; yy < 11; ++yy)
+			{
+				for (uint32_t xx = 0; xx < 11; ++xx)
+				{
+					float* mtx = (float*)data;
+					bx::mtxRotateXY(mtx, time + xx * 0.21f, time + yy * 0.37f);
+					mtx[12] = -15.0f + float(xx) * 3.0f;
+					mtx[13] = -15.0f + float(yy) * 3.0f;
+					mtx[14] = 0.0f;
+
+					float* color = (float*)&data[64];
+					color[0] = bx::sin(time + float(xx) / 11.0f) * 0.5f + 0.5f;
+					color[1] = bx::cos(time + float(yy) / 11.0f) * 0.5f + 0.5f;
+					color[2] = bx::sin(time * 3.0f) * 0.5f + 0.5f;
+					color[3] = 1.0f;
+
+					data += instanceStride;
+				}
+			}
+
+			// Set vertex and index buffer.
+			bgfx::setVertexBuffer(0, m_vbh);
+			bgfx::setIndexBuffer(m_ibh);
+
+			// Set instance data buffer.
+			bgfx::setInstanceDataBuffer(&idb);
+
+			// Set render states.
+			bgfx::setState(BGFX_STATE_DEFAULT);
+
+			// Submit primitive for rendering to view 0.
+			bgfx::submit(0, m_program);
+
+		}
 	}
 }
