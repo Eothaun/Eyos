@@ -20,8 +20,12 @@ namespace eyos
 		Renderer();
 
 		bool Init(uint32_t argc, char* argv[], uint32_t width, uint32_t height);
-		void Render(EyosEcs& ecs, Camera& camera);
+		void BeginRender(Camera& camera);
+		void RenderWorld(EyosEcs& ecs, Camera& camera);
+		void EndRender();
 		bool Shutdown();
+
+		bgfx::ProgramHandle GetMeshShaderProgram() { return meshShaderProgram; }
 
 	private:
 		void RenderModels(EyosEcs& ecs);

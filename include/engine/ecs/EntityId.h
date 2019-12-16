@@ -1,16 +1,17 @@
 #pragma once
 #include <cstdint>
 #include <ostream>
+#include "engine/Defines.hpp"
 
 namespace eyos {
-	struct EntityId
+	struct EYOS_API EntityId
 	{
 	public:
 		using Index_t = uint32_t;
 		using Version_t = uint8_t;
 
 		static_assert(std::is_unsigned_v<Version_t>,
-			"We rely on overflowing for the version. To make sure there is no undefined behaviour, it's required to use an unsigned int");
+			"We rely on overflowing for the version. To make sure there is no undefined behaviour, it's required to use an unsigned integer type");
 
 		EntityId() : index(0), version(0) {}
 		explicit EntityId(Index_t index, Version_t version = 0) : index(index), version(version) {}
@@ -31,8 +32,6 @@ namespace eyos {
 		friend bool operator>(const EntityId& lhs, const EntityId& rhs) { return rhs < lhs; }
 		friend bool operator>=(const EntityId& lhs, const EntityId& rhs) { return !(lhs < rhs); }
 
-		friend std::ostream& operator<<(std::ostream& os, const EntityId& id);
-
 	public:
 		static constexpr Index_t InvalidIndex = /*pow(2,24)-1 =*/ 16'777'215;
 
@@ -40,7 +39,7 @@ namespace eyos {
 		Version_t version;
 	};
 
-	std::ostream& operator<<(std::ostream& os, const EntityId& id);
+	EYOS_API std::ostream& operator<<(std::ostream& os, const EntityId& id);
 }
 
 namespace std

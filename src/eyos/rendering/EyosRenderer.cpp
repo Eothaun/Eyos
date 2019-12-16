@@ -97,8 +97,6 @@ namespace eyos {
 		u_time = bgfx::createUniform("u_time", bgfx::UniformType::Vec4);
 		u_color0 = bgfx::createUniform("u_color0", bgfx::UniformType::Vec4);
 
-		//bimg::ImageContainer* heightmap = imageLoad("maps/heightmap.png", bgfx::TextureFormat::RGBA8U);
-
 		m_timeOffset = bx::getHPCounter();
 
 		imguiCreate();
@@ -116,7 +114,7 @@ namespace eyos {
 		return true;
 	}
 
-	void Renderer::Render(EyosEcs& ecs, Camera& camera)
+	void Renderer::BeginRender(Camera& camera)
 	{
 		// Set view 0 default viewport.
 		bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height));
@@ -137,17 +135,12 @@ namespace eyos {
 		{
 			assert(false && "Instancing is not supported on your GPU.");
 		}
-			
+
 		const bx::Vec3 at = { 0.0f, 0.0f,   0.0f };
 		const bx::Vec3 eye = { 0.0f, 0.0f, -35.0f };
 
 		// Set view and projection matrix for view 0.
 		{
-			//float view[16];
-			//bx::mtxLookAt(view, eye, at);
-
-			//float proj[16];
-			//bx::mtxProj(proj, 60.0f, float(m_width) / float(m_height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
 			glm::mat4 view = camera.GetViewMatrix();
 			glm::mat4 proj = camera.GetProjectionMatrix(float(m_width) / float(m_height));
 
@@ -156,11 +149,17 @@ namespace eyos {
 			// Set view 0 default viewport.
 			bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height));
 		}
+	}
 
+	void Renderer::RenderWorld(EyosEcs& ecs, Camera& camera)
+	{
 		RenderModels(ecs);
 		RenderInstancedModels(ecs);
 
 		uiRenderer->Render();
+
+		float time = (float)((bx::getHPCounter() - m_timeOffset) / double(bx::getHPFrequency()));
+
 
 		//TODO: Remove this, it's just for testing
 		{
@@ -187,12 +186,16 @@ namespace eyos {
 		//Do the debug drawing
 		debugRenderer->Render();
 		debugRenderer->ClearLines();
+		
+	}
 
+	void Renderer::EndRender()
+	{
 		// Advance to next frame. Rendering thread will be kicked to
 		// process submitted rendering primitives.
 		bgfx::frame();
-		
 	}
+
 
 	bool Renderer::Shutdown()
 	{
