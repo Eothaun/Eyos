@@ -26,6 +26,8 @@ target_include_directories(Engine
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/enet/include>
 )
 
+target_compile_definitions(Engine PRIVATE BUILD_SHARED_LIBS)
+
 set_target_properties( Engine
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/libs"
