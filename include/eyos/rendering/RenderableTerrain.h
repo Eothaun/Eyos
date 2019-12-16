@@ -7,7 +7,7 @@
 
 
 
-class Mesh;
+struct Mesh;
 
 namespace eyos 
 {

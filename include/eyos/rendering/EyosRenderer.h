@@ -26,6 +26,8 @@ namespace eyos
 		bool Shutdown();
 
 		bgfx::ProgramHandle GetMeshShaderProgram() { return meshShaderProgram; }
+		DebugRenderer* GetDebugRenderer() { return debugRenderer.get(); }
+		UIRenderer* GetUIRenderer() { return uiRenderer.get(); }
 
 	private:
 		void RenderModels(EyosEcs& ecs);

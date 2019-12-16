@@ -71,6 +71,9 @@ int _main_(int _argc, char** _argv)
 	camera.position = { 0, 12, 35 };
 	camera.rotation = glm::quat{ glm::vec3{0.0, 0.0, 0.0} };
 
+	auto debugRenderer = renderer->GetDebugRenderer();
+	debugRenderer->AddLine({ 0, 0, 0 }, { 115, 15, 15 }, 10.f, 0xFFFF00FF);
+
 	while (true)
 	{
 		bool shouldExit = entry::processEvents(width, height, renderer->m_debug, renderer->m_reset, &mouseState);

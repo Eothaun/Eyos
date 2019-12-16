@@ -162,30 +162,13 @@ namespace eyos {
 
 
 		//TODO: Remove this, it's just for testing
-		{
-			float pA[3]{ 0, 0, -15 };
-			float pB[3]{ sin(time) * 5, cos(time) * 5, -15 };
-			debugRenderer->AddLine(pA, pB);
-		}
-		{
-			float pA[3]{ -6, 0, -15 };
-			float pB[3]{ sin(time) * 5 - 6, cos(time) * 5, -15 };
-			debugRenderer->AddLine(pA, pB, 0xFF0000FF);
-		}
-		{
-			float pA[3]{ 0, 6, -15 };
-			float pB[3]{ sin(time) * 5, cos(time) * 5 + 6, -15 };
-			debugRenderer->AddLine(pA, pB, 0xFF0000FF);
-		}
-		{
-			float pA[3]{ 0, -6, -15 };
-			float pB[3]{ sin(time) * 5, cos(time) * 5 - 6, -15 };
-			debugRenderer->AddLine(pA, pB, 0xFF0000FF);
-		}
+		debugRenderer->AddLine({ 0, 0, -15 }, { sin(time) * 5, cos(time) * 5, -15 });
+		debugRenderer->AddLine({ -6, 0, -15 }, { sin(time) * 5 - 6, cos(time) * 5, -15 }, 0, 0xFF0000FF);
+		debugRenderer->AddLine({ 0, 6, -15 }, { sin(time) * 5, cos(time) * 5 + 6, -15 }, 0, 0xFF0000FF);
+		debugRenderer->AddLine({ 0, -6, -15 }, { sin(time) * 5, cos(time) * 5 - 6, -15 }, 0, 0xFF0000FF);
 
 		//Do the debug drawing
 		debugRenderer->Render();
-		debugRenderer->ClearLines();
 		
 	}
 

@@ -1,4 +1,5 @@
 #include "eyos/rendering/DebugRenderer.h"
+#include <bx\timer.h>
 
 #include <array>
 #include <numeric>
@@ -9,20 +10,29 @@ namespace eyos
 {
 	DebugRenderer::DebugRenderer() {
 		shaderProgram = loadProgram("cubes/vs_cubes", "cubes/fs_cubes");
+
+		startTime = bx::getHPCounter();
 	}
 
-	void DebugRenderer::AddLine(float posA[3], float posB[3], uint32_t color)
+	void DebugRenderer::AddLine(glm::vec3 posA, glm::vec3 posB, float time, uint32_t color)
 	{
+		float currentTime = (float)((bx::getHPCounter() - startTime) / double(bx::getHPFrequency()));
+
 		lines.emplace_back(PosColorVertex{ posA[0], posA[1], posA[2], color }, PosColorVertex{ posB[0], posB[1], posB[2], color });
+		linesAliveUntil.push_back(currentTime + time);
 	}
-	void DebugRenderer::AddLine(float posA[3], float posB[3], uint32_t colorA, uint32_t colorB)
+	void DebugRenderer::AddLine(glm::vec3 posA, glm::vec3 posB, float time, uint32_t colorA, uint32_t colorB)
 	{
+		float currentTime = (float)((bx::getHPCounter() - startTime) / double(bx::getHPFrequency()));
+
 		lines.emplace_back(PosColorVertex{ posA[0], posA[1], posA[2], colorA }, PosColorVertex{ posB[0], posB[1], posB[2], colorB });
+		linesAliveUntil.push_back(currentTime + time);
 	}
 
 	void DebugRenderer::ClearLines()
 	{
 		lines.clear();
+		linesAliveUntil.clear();
 	}
 
 	void DebugRenderer::Render()
@@ -61,5 +71,24 @@ namespace eyos
 		bgfx::setState(state);
 		
 		bgfx::submit(0, shaderProgram);
+
+		CheckLineLifetimes();
+	}
+
+	void DebugRenderer::CheckLineLifetimes()
+	{
+		float currentTime = (float)((bx::getHPCounter() - startTime) / double(bx::getHPFrequency()));
+		
+		auto aliveIt = linesAliveUntil.begin();
+		auto linesIt = lines.begin();
+		while (aliveIt != linesAliveUntil.end()) {
+			if (*aliveIt <= currentTime) {
+				aliveIt = linesAliveUntil.erase(aliveIt);
+				linesIt = lines.erase(linesIt);
+			} else {
+				++aliveIt;
+				++linesIt;
+			}
+		}
 	}
 }
