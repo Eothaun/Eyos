@@ -51,7 +51,7 @@ namespace eyos {
 
 		glm::mat4 modelMat = GetModelMatrix();
 
-		glm::vec3 absoluteDirection = modelMat * glm::vec4{ relativeDirection, 0 };
+		glm::vec3 absoluteDirection = glm::vec3{ modelMat * glm::vec4{ relativeDirection, 0 } };
 		
 		position += absoluteDirection * movementSpeed;
 	}
