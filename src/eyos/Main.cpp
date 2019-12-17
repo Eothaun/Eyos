@@ -97,7 +97,10 @@ int _main_(int _argc, char** _argv)
 		ImGui::End();
 
 		camera.DoFreecamMovement(0.5f, 0.01f, mouseState);
-
+		if (mouseState.m_buttons[1]) {
+			eyos::Ray ray = camera.ScreenpointToRay(mouseState.m_mx, mouseState.m_my, width, height);
+			debugRenderer->AddLine(ray.origin, ray.origin + ray.direction * ray.maxDistance, 8.f, 0xFFFF00FF);
+		}
 		imguiEndFrame();
 		renderer->BeginRender(camera);
 		renderer->RenderWorld(ecs, camera);

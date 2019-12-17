@@ -56,6 +56,28 @@ namespace eyos {
 		position += absoluteDirection * movementSpeed;
 	}
 
+	Ray Camera::ScreenpointToRay(uint32_t screenX, uint32_t screenY, uint32_t screenWidth, uint32_t screenHeight) {
+		float aspectRatio = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
+
+		screenY = screenHeight - screenY;
+
+		//project to zfar plane;
+		const float zPos = 1.0f;
+
+		glm::vec3 outPoint;
+		bool isNegativeToOne = bgfx::getCaps()->homogeneousDepth;
+		if (isNegativeToOne) {
+			outPoint = glm::unProjectNO(glm::vec3{screenX, screenY, zPos}, GetViewMatrix(), GetProjectionMatrix(aspectRatio), glm::vec4{ 0, 0, screenWidth, screenHeight });
+		} else {
+			outPoint = glm::unProjectZO(glm::vec3{ screenX, screenY, zPos }, GetViewMatrix(), GetProjectionMatrix(aspectRatio), glm::vec4{ 0, 0, screenWidth, screenHeight });
+		}
+
+		glm::vec3 direction = outPoint - position;
+		float length = glm::length(direction);
+		direction /= length;
+		return Ray{ position, direction, length };
+	}
+
 	glm::mat4 Camera::GetModelMatrix() const
 	{
 		glm::mat4 modelMat{ 1.0f };

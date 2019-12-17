@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext/quaternion_float.hpp>
 #include "entry/input.h"
+#include "engine/geometry/Ray.h"
 
 
 namespace eyos {
@@ -25,6 +26,7 @@ namespace eyos {
 
 	public:
 		void DoFreecamMovement(float movementSpeed, float rotationSpeed, const entry::MouseState& mouseState);
+		Ray ScreenpointToRay(uint32_t screenX, uint32_t screenY, uint32_t screenWidth, uint32_t screenHeight);
 
 		glm::mat4 GetModelMatrix() const;
 		glm::mat4 GetViewMatrix() const;
