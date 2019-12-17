@@ -101,6 +101,14 @@ int _main_(int _argc, char** _argv)
 			eyos::Ray ray = camera.ScreenpointToRay(mouseState.m_mx, mouseState.m_my, width, height);
 			debugRenderer->AddLine(ray.origin, ray.origin + ray.direction * ray.maxDistance, 8.f, 0xFFFF00FF);
 		}
+		if (inputGetKeyState(entry::Key::KeyG)) {
+			glm::vec3 hitPos;
+			glm::vec3 normal;
+			if (terrain.terrain.GetHeightAt(glm::vec2{ camera.position.x, camera.position.z }, &hitPos, &normal)) {
+				debugRenderer->AddLine(hitPos, hitPos + glm::vec3{ 0, 115, 0 }, 14.f, 0xFF0000FF);
+				debugRenderer->AddLine(hitPos, hitPos + normal*10.f, 14.f, 0x00FF00FF);
+			}
+		}
 		imguiEndFrame();
 		renderer->BeginRender(camera);
 		renderer->RenderWorld(ecs, camera);

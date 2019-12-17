@@ -19,18 +19,18 @@ namespace eyos
     {
         outVertices.resize(verticesAlongLength * verticesAlongWidth);
 
-        float halfWidth = ((float)verticesAlongWidth - 1.0f) / 2.0f;
-        float halfLength = ((float)verticesAlongLength - 1.0f) / 2.0f;
+        float halfWidth = 0; //((float)verticesAlongWidth - 1.0f) / 2.0f;
+        float halfLength = 0; //((float)verticesAlongLength - 1.0f) / 2.0f;
 
         for (int z = 0; z < verticesAlongLength; z++)
         {
             for (int x = 0; x < verticesAlongWidth; x++)
             {
                 glm::vec3 vertexPos{ (float)x - halfWidth,
-                    (float)pHeight[z * verticesAlongLength + x],
+                    (float)pHeight[z * verticesAlongWidth + x],
                     (float)z - halfLength };
                 glm::vec2 uv{ (float)x / (verticesAlongWidth - 1), (float)z / (verticesAlongLength - 1) };
-                outVertices[z * verticesAlongLength + x] = PosNormalUvVertex(
+                outVertices[z * verticesAlongWidth + x] = PosNormalUvVertex(
                     vertexPos, glm::vec3{0, 1, 0}, uv
                 );
             }
@@ -40,11 +40,11 @@ namespace eyos
         {
             for (int x = 0; x < verticesAlongWidth-1; x++)
             {
-                glm::vec3 pos = outVertices[z * verticesAlongLength + x].pos;
-                glm::vec3 deltaX = outVertices[(z)*verticesAlongLength + (x + 1)].pos - pos;
-                glm::vec3 deltaZ = outVertices[(z + 1) * verticesAlongLength + (x)].pos - pos;;
+                glm::vec3 pos = outVertices[z * verticesAlongWidth + x].pos;
+                glm::vec3 deltaX = outVertices[(z)*verticesAlongWidth + (x + 1)].pos - pos;
+                glm::vec3 deltaZ = outVertices[(z + 1) * verticesAlongWidth + (x)].pos - pos;;
                 glm::vec3 normal = glm::cross(glm::normalize(deltaX), glm::normalize(deltaZ));
-                outVertices[z * verticesAlongLength + x].normal = normal;
+                outVertices[z * verticesAlongWidth + x].normal = normal;
             }
         }
     }
@@ -58,6 +58,8 @@ namespace eyos
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     static void GenerateIndices(std::vector<uint32_t>& outIndices, int verticesAlongWidth, int verticesAlongLength)
     {
+        std::swap(verticesAlongWidth, verticesAlongLength);
+
         int numIndices = (verticesAlongWidth * 2) * (verticesAlongLength - 1) + (verticesAlongLength - 2);
 
         outIndices.resize(numIndices);
@@ -105,7 +107,7 @@ namespace eyos
 		Group vertexGroup{};
 
 		std::vector<PosNormalUvVertex> vertices{};
-        GeneratePositionTexturedWithHeight(vertices, terrain.GetWidth(), terrain.GetHeight(), terrain.GetHeightmap());
+        GeneratePositionTexturedWithHeight(vertices, terrain.GetMapWidth(), terrain.GetMapWidth(), terrain.GetHeightmap());
 
 		const bgfx::Memory* vertexMemory = bgfx::copy(vertices.data(), vertices.size() * sizeof(PosNormalUvVertex));
 		vertexGroup.m_vbh = bgfx::createVertexBuffer(vertexMemory, PosNormalUvVertex::ms_layout);
@@ -113,7 +115,7 @@ namespace eyos
 
 
 		std::vector<uint32_t> indices{};
-        GenerateIndices(indices, terrain.GetWidth(), terrain.GetHeight());
+        GenerateIndices(indices, terrain.GetMapWidth(), terrain.GetMapWidth());
 		
 		const bgfx::Memory* indexMemory = bgfx::copy(indices.data(), indices.size() * sizeof(uint32_t));
 		vertexGroup.m_ibh = bgfx::createIndexBuffer(indexMemory, BGFX_BUFFER_INDEX32);

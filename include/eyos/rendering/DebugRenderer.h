@@ -29,7 +29,7 @@ namespace eyos
 		void CheckLineLifetimes();
 
 	public:
-		bool useDepthTest = true;
+		bool useDepthTest = false;
 
 	private:
 		std::vector<std::pair<PosColorVertex, PosColorVertex>> lines;
