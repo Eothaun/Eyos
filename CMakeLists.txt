@@ -19,13 +19,18 @@ list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/third_party/Catch2/
 include(SetCppVersionOfTarget)
 include(GitSubmodule)
 include(target_source_local)
+include(add_eyos_mesh)
+include(add_eyos_shader)
 include(ClangFormat)
 
 # declare options
+option(BGFX_SUPRESS_WARNING "BGFX supress warnings" ON)
+option(BGFX_BUILD_EXAMPLES "BGFX Build no EXAMPLES" OFF)
 option(BUILD_TESTING "Build tests" OFF)
 option(BUILD_WITH_CALNG_FORMAT "Build with clang format" OFF)
 option(BUILD_CXX_20 "C++20" OFF)
 option(GIT_SUBMODULE "Check submodules during build" ON)
+option(USE_PREBUILT_BGFX_TOOLS "If on, uses the .exe's in {EYOS_SOURCE_DIR}/tools for geometryc and shaderc, otherwise it will be compiled from source" ON)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(THIRD_PARTY "${CMAKE_CURRENT_SOURCE_DIR}/third_party")

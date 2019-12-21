@@ -10,3 +10,6 @@
 [submodule "third_party/bgfx.cmake"]
 	path = third_party/bgfx.cmake
 	url = https://github.com/FireFlyForLife/bgfx.cmake
+[submodule "third_party/gainput"]
+	path = third_party/gainput
+	url = https://github.com/jkuhlmann/gainput.git

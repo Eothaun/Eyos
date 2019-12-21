@@ -1,6 +1,7 @@
 #include "engine/Terrain.h"
 
 #include <cassert>
+#include <cstring>
 
 
 namespace eyos
