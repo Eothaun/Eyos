@@ -53,10 +53,15 @@ namespace eyos {
 	{
 		Args args(argc, argv);
 
+		const bool useTextOverlay = true;
+		const bool useProfiler = true;
+		
 		m_width = width;
 		m_height = height;
-		m_debug = BGFX_DEBUG_TEXT;
-		m_reset = BGFX_RESET_VSYNC;
+		m_debug = BGFX_DEBUG_TEXT |
+			(useTextOverlay ? BGFX_DEBUG_STATS : 0) |
+			(useProfiler ? BGFX_DEBUG_PROFILER : 0);
+		m_reset = /*BGFX_RESET_VSYNC*/ BGFX_RESET_MSAA_X4;
 
 		bgfx::Init init;
 		init.type = args.m_type;
@@ -221,18 +226,7 @@ namespace eyos {
 
 				bgfx::setIndexBuffer(group.m_ibh);
 				bgfx::setVertexBuffer(0, group.m_vbh);
-
-				/*float translationMatrix[16];
-				bx::mtxTranslate(translationMatrix, 0, -5, -25);
-				float timedRotation[16];
-				bx::mtxRotateXY(timedRotation, 3.14 / 2, time / 2.5f);
-				float scaleMatrix[16];
-				bx::mtxScale(scaleMatrix, 0.25);
-				float modelMatrix[16];
-				bx::mtxIdentity(modelMatrix);*/
-				//bx::mtxMul(modelMatrix, modelMatrix, timedRotation);
-				//bx::mtxMul(modelMatrix, modelMatrix, translationMatrix);
-				//bx::mtxMul(modelMatrix, modelMatrix, scaleMatrix);
+				
 				glm::mat4 modelMatrix = transform.GetModelMatrix();
 
 				bgfx::setTransform(glm::value_ptr(modelMatrix));

@@ -62,11 +62,11 @@ namespace eyos
 		bgfx::setVertexBuffer(0, vtxHandle);
 		bgfx::destroy(vtxHandle);
 
-		const bgfx::Memory* idxMemory = bgfx::alloc(sizeof(uint32_t) * lines.size() * 2);
+		/*const bgfx::Memory* idxMemory = bgfx::alloc(sizeof(uint32_t) * lines.size() * 2);
 		std::iota(reinterpret_cast<uint32_t*>(idxMemory->data), reinterpret_cast<uint32_t*>(idxMemory->data) + lines.size() * 2, 0);
 		bgfx::DynamicIndexBufferHandle idxHandle = bgfx::createDynamicIndexBuffer(idxMemory, BGFX_BUFFER_INDEX32);
 		bgfx::setIndexBuffer(idxHandle);
-		bgfx::destroy(idxHandle);
+		bgfx::destroy(idxHandle);*/
 
 		bgfx::setState(state);
 		

@@ -67,7 +67,7 @@ namespace eyos {
 		glm::vec3 outPoint;
 		bool isNegativeToOne = bgfx::getCaps()->homogeneousDepth;
 		if (isNegativeToOne) {
-			outPoint = glm::unProjectNO(glm::vec3{screenX, screenY, zPos}, GetViewMatrix(), GetProjectionMatrix(aspectRatio), glm::vec4{ 0, 0, screenWidth, screenHeight });
+			outPoint = glm::unProjectNO(glm::vec3{ screenX, screenY, zPos}, GetViewMatrix(), GetProjectionMatrix(aspectRatio), glm::vec4{ 0, 0, screenWidth, screenHeight });
 		} else {
 			outPoint = glm::unProjectZO(glm::vec3{ screenX, screenY, zPos }, GetViewMatrix(), GetProjectionMatrix(aspectRatio), glm::vec4{ 0, 0, screenWidth, screenHeight });
 		}
