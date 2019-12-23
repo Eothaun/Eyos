@@ -53,8 +53,8 @@ namespace eyos {
 	{
 		Args args(argc, argv);
 
-		const bool useTextOverlay = true;
-		const bool useProfiler = true;
+		const bool useTextOverlay = false;
+		const bool useProfiler = false;
 		
 		m_width = width;
 		m_height = height;
