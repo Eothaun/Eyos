@@ -1,7 +1,8 @@
 add_subdirectory(glm)
+target_compile_definitions(glm INTERFACE GLM_FORCE_EXPLICIT_CTOR) 
 # Uncomment below if you want GLM debug messages about available features
 #target_compile_definitions(glm INTERFACE GLM_FORCE_MESSAGES=1)
-target_compile_definitions(glm INTERFACE GLM_FORCE_EXPLICIT_CTOR) 
+
 add_subdirectory(enet)
 
 add_subdirectory(Catch2)
@@ -22,3 +23,6 @@ if(BGFX_SUPRESS_WARNING)
         target_compile_options(astc PUBLIC -w)
     endif()
 endif(BGFX_SUPRESS_WARNING)
+
+add_subdirectory(gainput)
+target_include_directories(gainput INTERFACE "gainput/lib/include")

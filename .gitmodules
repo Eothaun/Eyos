@@ -13,3 +13,6 @@
 [submodule "third_party/gainput"]
 	path = third_party/gainput
 	url = https://github.com/jkuhlmann/gainput.git
+[submodule "third_party/CrossWindow"]
+	path = third_party/CrossWindow
+	url = https://github.com/alaingalvan/CrossWindow.git
