@@ -20,7 +20,6 @@ add_library(enet::enet STATIC IMPORTED)
 set_target_properties(enet::enet PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${enet_INCLUDE_DIR}"
 )
-
 endif()
 
 set_target_properties( enet

@@ -21,6 +21,7 @@ include(GitSubmodule)
 include(target_source_local)
 include(add_eyos_mesh)
 include(add_eyos_shader)
+include(use_vld)
 include(ClangFormat)
 
 # declare options
@@ -31,10 +32,15 @@ option(BUILD_WITH_CALNG_FORMAT "Build with clang format" OFF)
 option(BUILD_CXX_20 "C++20" OFF)
 option(GIT_SUBMODULE "Check submodules during build" ON)
 option(USE_PREBUILT_BGFX_TOOLS "If on, uses the .exe's in {EYOS_SOURCE_DIR}/tools for geometryc and shaderc, otherwise it will be compiled from source" ON)
+option(USE_VLD "Makes use of VLD" ON)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(THIRD_PARTY "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
-set(ASSETS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data")
+set(ASSETS_DIR "${CMAKE_INSTALL_PREFIX}/data")
+
+if(WIN32)
+    set(VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
+endif(WIN32)
 
 # get git submodules
 GitSubmodule()

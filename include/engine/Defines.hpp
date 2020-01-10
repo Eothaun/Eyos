@@ -1,4 +1,6 @@
 #pragma once
+// std includes:
+#include <cassert>
 
 // Generic helper definitions for shared library support
 #if defined _WIN32 || defined __CYGWIN__
@@ -22,3 +24,5 @@
 #else
 #define EYOS_API DllImport
 #endif
+
+#define assertm(exp, msg) assert(((void)msg, exp))
