@@ -4,7 +4,7 @@ project(Eyos VERSION 0.0.1 DESCRIPTION "Yet another student RTS"  LANGUAGES CXX)
 
 #define global warning settings this will be for all projects! If one spscific target shall only have something see target ... cmake folder!
 if(MSVC)
-add_compile_options(/W3)
+add_compile_options(/W3 /MP)
 else()
 add_compile_options(-W -Wall)
 endif()
