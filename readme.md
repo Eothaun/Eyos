@@ -23,6 +23,7 @@ $ cmake .
 ```bash
 $ make & make install
 ```
+(*more information ot the cmake useage in our project: [cmake configuration](https://github.com/Eothaun/Eyos/wiki/cmake-Configuration)*)
 
 or open our project in Visual Studio 19. For more information about this see [here](https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=vs-2019#installation).
 
@@ -54,6 +55,7 @@ Please download the [Clang Format VS Extension](https://marketplace.visualstudio
 
 ## Documentation
 
-- [Overview](/docs)
+- [Overview](https://github.com/Eothaun/Eyos/wiki/)
+- [cmake configuration](https://github.com/Eothaun/Eyos/wiki/cmake-Configuration)
 - [Coding Convention](#)
 - [clang format settings](#)
