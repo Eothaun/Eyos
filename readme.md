@@ -2,7 +2,10 @@
 
 Eyos is a student project to build a RTS that handles thousands (or millions) of units.
 
+## Current Status
 
+![status](https://github.com/Eothaun/Eyos/workflows/C%2FC%2B%2B%20CI%20Linux/badge.svg)
+![status](https://github.com/Eothaun/Eyos/workflows/C%2FC%2B%2B%20CI%20Windows/badge.svg)
 
 ## How to build
 
