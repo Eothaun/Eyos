@@ -14,7 +14,7 @@ jobs:
     - name: create smlink
       run: ln -s cmake-3.16.2-Linux-x86_64/bin/cmake cm && chmod 777 cm
     - name: configure
-      run: ls && cm -DBUILD_TESTING=ON .
+      run: ./cm -DBUILD_TESTING=ON .
     - name: ctest
       run: ctest .
     - name: make
