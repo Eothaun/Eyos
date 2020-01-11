@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: C/C++ CI Linux
 
 on: [push]
 
@@ -16,9 +16,7 @@ jobs:
     - name: create smlink
       run: ln -s cmake-3.16.2-Linux-x86_64/bin/cmake cm && chmod 777 cm
     - name: configure
-      run: ls -l && ls -l src/ && ./cm -DBUILD_TESTING=ON .
-    - name: ctest
-      run: ctest .
+      run: ls -l && ls -l src/ && ./cm .
     - name: make
       run: make
     - name: make check
