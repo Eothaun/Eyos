@@ -26,6 +26,7 @@ SOFTWARE.
 #include "Packet.hpp"
 #include <string>
 #include <vector>
+#include <cstddef>
 namespace eyos::net {
 //Free functions
 [[nodiscard]] EYOS_API net::Address CreateAddress(std::uint16_t port, std::uint32_t host = ENET_HOST_ANY);
