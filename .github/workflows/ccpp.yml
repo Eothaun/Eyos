@@ -10,9 +10,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: update cmake
-      run: wget https://github.com/Kitware/CMake/releases/download/v3.16.2/cmake-3.16.2-Linux-x86_64.tar.gz &&  tar xvzf cmake-3.16.2-Linux-x86_64.tar.gz && cd 
+      run: wget https://github.com/Kitware/CMake/releases/download/v3.16.2/cmake-3.16.2-Linux-x86_64.tar.gz &&  tar xvzf cmake-3.16.2-Linux-x86_64.tar.gz
+    - name: create smlink
+      run: ln -s cmake-3.16.2-Linux-x86_64/bin/cmake cm && chmod 777 cm
     - name: configure
-      run: ls && cmake -DBUILD_TESTING=ON .
+      run: ls && cm -DBUILD_TESTING=ON .
     - name: ctest
       run: ctest .
     - name: make
