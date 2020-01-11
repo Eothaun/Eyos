@@ -24,11 +24,7 @@ jobs:
     - name: make distcheck
       run: make distcheck
   build-windows:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macOS-latest]
-
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
 
