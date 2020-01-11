@@ -6,6 +6,7 @@
 #include <imgui\imgui.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <gainput/gainput.h>
 
 #include "engine/ecs/EntityId.h"
 #include "eyos/rendering/EyosRenderer.h"
@@ -321,6 +322,11 @@ int _main_(int _argc, char** _argv)
 	entry::WindowHandle defaultWindow = { 0 };
 	setWindowSize(defaultWindow, width, height);
 
+	gainput::InputManager inputManager{};
+	inputManager.SetDisplaySize(width, height);
+	auto keyboard = inputManager.CreateAndGetDevice<gainput::InputDeviceKeyboard>();
+	auto mouseId = inputManager.CreateDevice<gainput::InputDeviceMouse>();
+	gainput::InputMap inputMap{ inputManager };
 
 	EyosEcs ecs{};
 
@@ -352,14 +358,21 @@ int _main_(int _argc, char** _argv)
 	auto debugRenderer = renderer->GetDebugRenderer();
 	debugRenderer->AddLine({ 0, 0, 0 }, { 115, 15, 15 }, 10.f, 0xFFFF00FF);
 
+	bool openSpawnWindow = true;
+	//For unit spawning tool
+	glm::ivec2 amount{ 3, 3 };
+	glm::vec2 startPos{ 0, 0 };
+	
 	while (true)
 	{
+		inputManager.Update();
+		
 		bool shouldExit = entry::processEvents(width, height, renderer->m_debug, renderer->m_reset, &mouseState);
 		if (shouldExit)
 		{
 			break;
 		}
-
+		
 		imguiBeginFrame(mouseState.m_mx
 			, mouseState.m_my
 			, (mouseState.m_buttons[entry::MouseButton::Left] ? IMGUI_MBUT_LEFT : 0)
@@ -379,11 +392,12 @@ int _main_(int _argc, char** _argv)
 		ImGui::End();
 
 		camera.DoFreecamMovement(0.5f, 0.01f, mouseState);
+		
 		if (mouseState.m_buttons[1]) {
 			eyos::Ray ray = camera.ScreenpointToRay(mouseState.m_mx, mouseState.m_my, width, height);
 			debugRenderer->AddLine(ray.origin, ray.origin + ray.direction * ray.maxDistance, 8.f, 0xFFFF00FF);
 		}
-		if (inputGetKeyState(entry::Key::KeyG)) {
+		if (keyboard->GetBool(gainput::KeyG)) {
 			glm::vec3 hitPos;
 			glm::vec3 normal;
 			if (terrain.terrain.GetHeightAt(glm::vec2{ camera.position.x, camera.position.z }, &hitPos, &normal)) {
@@ -391,6 +405,18 @@ int _main_(int _argc, char** _argv)
 				debugRenderer->AddLine(hitPos, hitPos + normal*10.f, 14.f, 0x00FF00FF);
 			}
 		}
+
+		if(ImGui::Begin("Unit Spawn Menu", &openSpawnWindow)) {
+			ImGui::Text("Spawn knights:");
+
+			ImGui::InputFloat2("Start position", glm::value_ptr(startPos));
+			ImGui::InputInt2("Amount", glm::value_ptr(amount));
+			if(ImGui::Button("Spawn units")) {
+				std::cout << "Spawning " << amount.x * amount.y << " Units\n";
+			}
+		}
+		ImGui::End();
+
 		imguiEndFrame();
 		renderer->BeginRender(camera);
 		renderer->RenderWorld(ecs, camera);

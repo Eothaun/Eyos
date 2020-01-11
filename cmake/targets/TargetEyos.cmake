@@ -78,6 +78,15 @@ target_link_libraries(Eyos
 	bimg
 	bx
 	example-common
+	gainput
 )
+
+get_target_property(EYOS_RUNTIME_OUTPUT_DIR Eyos RUNTIME_OUTPUT_DIRECTORY)
+add_custom_command(TARGET Eyos POST_BUILD        # Adds a post-build event to MyTest
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
+        $<TARGET_FILE:gainput>      # <--this is in-file
+        $<TARGET_FILE_DIR:Eyos>)                 # <--this is out-file path
+
+
 
 SetCppVersionOfTarget(Eyos)

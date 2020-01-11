@@ -61,7 +61,7 @@ namespace eyos {
 		m_debug = BGFX_DEBUG_TEXT |
 			(useTextOverlay ? BGFX_DEBUG_STATS : 0) |
 			(useProfiler ? BGFX_DEBUG_PROFILER : 0);
-		m_reset = /*BGFX_RESET_VSYNC*/ BGFX_RESET_MSAA_X4;
+		m_reset = /*BGFX_RESET_VSYNC |*/ BGFX_RESET_MSAA_X4;
 
 		bgfx::Init init;
 		init.type = args.m_type;
