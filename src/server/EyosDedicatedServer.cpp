@@ -15,7 +15,8 @@ net::Host_ptr Server() {
 }
 void OnConnect(net::Peer&& who,[[maybe_unused]] std::uint32_t eventData) {
     std::cout << "onConnect() Data: "<< eventData <<"\n";
-    if (net::SendPacket(who, net::CreatePacket(PacketType::Send, 42, sizeof(int)))) {
+    const net::Peer who_{ std::move(who)};
+    if (net::SendPacket(who_, net::CreatePacket(PacketType::Send, 42, sizeof(int)))) {
         std::cout << "Maybe Send!\n";
     }
 }

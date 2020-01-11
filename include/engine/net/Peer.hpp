@@ -39,13 +39,13 @@ public:
     Peer& operator=(Peer&& peer) noexcept;
 
 public:
-    Address Address();
-    template <typename Data>
-    std::optional<Data> Data()
+    net::Address Address();
+    template <typename Data_>
+    std::optional<Data_> Data()
     {
         if (enetPeer->data == nullptr)
             return std::nullopt;
-        Data data {};
+        Data_ data {};
         memcpy(&data, &enetPeer->data, sizeof(Data));
         return { data };
     }
@@ -61,6 +61,6 @@ private:
     //friends:
     friend EYOS_API bool SendPacket(const Peer& peer, Packet&& packet);
     friend EYOS_API void Broadcast(const Host& peer, Packet&& packet, std::uint8_t channelID);
-    friend EYOS_API Host;
+    friend class EYOS_API Host;
 };
 }

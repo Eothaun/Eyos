@@ -11,6 +11,12 @@ target_include_directories(EyosDedicatedServer
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 
+    target_link_libraries(EyosDedicatedServer 
+        PRIVATE
+        Engine
+        enet
+    )
+
 if(WIN32)
 set_target_properties( EyosDedicatedServer
     PROPERTIES
@@ -26,8 +32,6 @@ use_vld(EyosDedicatedServer)
         PRIVATE
         ws2_32.lib
         winmm.lib
-        Engine
-        enet
     )
 
 else(WIN32)

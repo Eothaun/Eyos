@@ -34,7 +34,7 @@ namespace eyos::net {
             }
         };
         net::Event event{};
-        while (enet_host_service(host.enetHost, &event, 5000) > 0) {
+        while (enet_host_service(host.enetHost, &event, timeout) > 0) {
             auto eventType{ static_cast<NetEvents>(event.type) };
             switch (eventType) {
             case NetEvents::Connect: {

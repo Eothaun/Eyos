@@ -23,12 +23,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #include "NetFwd.hpp"
+#include "Packet.hpp"
 #include <string>
+#include <vector>
 namespace eyos::net {
 //Free functions
-[[nodiscard]] EYOS_API Address CreateAddress(std::uint16_t port, std::uint32_t host = ENET_HOST_ANY);
-[[nodiscard]] EYOS_API Address CreateAddress(std::uint16_t port, const std::string& hostName);
-[[nodiscard]] EYOS_API Host_ptr CreateHost(const Address& address,
+[[nodiscard]] EYOS_API net::Address CreateAddress(std::uint16_t port, std::uint32_t host = ENET_HOST_ANY);
+[[nodiscard]] EYOS_API net::Address CreateAddress(std::uint16_t port, const std::string& hostName);
+[[nodiscard]] EYOS_API Host_ptr CreateHost(const net::Address& address,
     size_t peerCount = 32,
     size_t channelLimit = 2,
     std::uint32_t incomingBandwidth = 0,
@@ -52,11 +54,11 @@ namespace eyos::net {
     std::uint32_t incomingBandwidth = 0,
     std::uint32_t outgoingBandwidth = 0);
 
-EYOS_API bool SendPacket(const Peer& peer, Packet&& packet);
-EYOS_API void Broadcast(const Host& peer, Packet&& packet, std::uint8_t channelID);
+EYOS_API bool SendPacket(const net::Peer& peer, net::Packet&& packet);
+EYOS_API void Broadcast(const net::Host& peer, net::Packet&& packet, std::uint8_t channelID);
 
 template <typename PacketHeaderType>
-[[nodiscard]] Packet CreateEmptyPacket(const PacketHeaderType packetType, std::size_t length)
+[[nodiscard]] net::Packet CreateEmptyPacket(const PacketHeaderType packetType, std::size_t length)
 {
     static_assert(std::is_enum_v<PacketHeaderType>, "Is not an Enum!");
     auto size { length + sizeof(PacketHeaderType) };
@@ -68,7 +70,7 @@ template <typename PacketHeaderType>
 };
 
 template <typename PacketHeaderType, typename Data>
-[[nodiscard]] Packet CreatePacket(const PacketHeaderType packetType, const Data& data, std::size_t length)
+[[nodiscard]] net::Packet CreatePacket(const PacketHeaderType packetType, const Data& data, std::size_t length)
 {
     static_assert(std::is_enum_v<PacketHeaderType>, "Is not an Enum!");
     auto size { length + sizeof(PacketHeaderType) };
@@ -81,7 +83,7 @@ template <typename PacketHeaderType, typename Data>
 };
 
 template <typename Data>
-[[nodiscard]] Packet&& AppendToPacket(Packet&& packet, const Data& data, std::size_t length)
+[[nodiscard]] net::Packet&& AppendToPacket(net::Packet&& packet, const Data& data, std::size_t length)
 {
     enet_packet_resize(packet.enetPacket, length);
     memcpy(&packet.enetPacket->data[packet.enetPacket->dataLength], &data, length);
@@ -89,7 +91,7 @@ template <typename Data>
 }
 
 template <typename Data>
-[[nodiscard]] Packet&& AppendToPacket(Packet&& packet, Data&& data, std::size_t length)
+[[nodiscard]] net::Packet&& AppendToPacket(net::Packet&& packet, Data&& data, std::size_t length)
 {
     enet_packet_resize(packet.enetPacket, length);
     memcpy(&packet.enetPacket->data[packet.enetPacket->dataLength], &data, length);

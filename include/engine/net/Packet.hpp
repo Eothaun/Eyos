@@ -24,6 +24,7 @@ SOFTWARE.
 */
 #include "NetFwd.hpp"
 #include <string>
+#include <cstring>
 namespace eyos::net {
 
 class EYOS_API Packet {
@@ -50,8 +51,8 @@ public:
         memcpy(data.data(), &enetPacket->data[sizeof(PacketHeaderType)], size);
         return std::move(data);
     }
-    template <typename PacketHeaderType, typename Data>
-    Data&& Data(Data&& data)
+    template <typename PacketHeaderType, typename Data_>
+    Data_&& Data(Data_&& data)
     {
         static_assert(std::is_enum_v<PacketHeaderType>, "Is not an Enum!");
         memcpy(&data, &enetPacket->data[sizeof(PacketHeaderType)], enetPacket->dataLength - sizeof(PacketHeaderType));
