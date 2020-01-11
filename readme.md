@@ -1,6 +1,6 @@
 # Eyos
 
-Eyos is a student project to build a RTS that handles thousands of units.
+Eyos is a student project to build a RTS that handles thousands (or millions) of units.
 
 
 
@@ -48,6 +48,7 @@ Please download the [Clang Format VS Extension](https://marketplace.visualstudio
 - [glm](https://github.com/g-truc/glm)
 - [bgfx](https://github.com/bkaradzic/bgfx)
 - [Catch2](https://github.com/catchorg/Catch2)
+- [VLD](https://github.com/KindDragon/vld) *Optional on Windows: USE_VLD=ON*
 
 
 
