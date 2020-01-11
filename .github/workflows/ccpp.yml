@@ -17,8 +17,10 @@ jobs:
       run: ln -s cmake-3.16.2-Linux-x86_64/bin/cmake cm && chmod 777 cm
     - name: configure
       run: ls -l && ls -l src/ && ./cm .
-    - name: make
-      run: make
+    - name: make Engine
+      run: make Engine
+    - name: make DedicatedServer
+      run: make EyosDedicatedServer
     - name: make check
       run: make check
     - name: make distcheck
