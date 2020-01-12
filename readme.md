@@ -1,8 +1,11 @@
 # Eyos
 
-Eyos is a student project to build a RTS that handles thousands of units.
+Eyos is a student project to build a RTS that handles thousands (or millions) of units.
 
+## Current Status
 
+![status](https://github.com/Eothaun/Eyos/workflows/C%2FC%2B%2B%20CI%20Linux/badge.svg)
+![status](https://github.com/Eothaun/Eyos/workflows/C%2FC%2B%2B%20CI%20Windows/badge.svg)
 
 ## How to build
 
@@ -23,6 +26,7 @@ $ cmake .
 ```bash
 $ make & make install
 ```
+(*more information ot the cmake useage in our project: [cmake configuration](https://github.com/Eothaun/Eyos/wiki/cmake-Configuration)*)
 
 or open our project in Visual Studio 19. For more information about this see [here](https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=vs-2019#installation).
 
@@ -48,11 +52,13 @@ Please download the [Clang Format VS Extension](https://marketplace.visualstudio
 - [glm](https://github.com/g-truc/glm)
 - [bgfx](https://github.com/bkaradzic/bgfx)
 - [Catch2](https://github.com/catchorg/Catch2)
+- [VLD](https://github.com/KindDragon/vld) *Optional on Windows: USE_VLD=ON*
 
 
 
 ## Documentation
 
-- [Overview](/docs)
+- [Overview](https://github.com/Eothaun/Eyos/wiki/)
+- [cmake configuration](https://github.com/Eothaun/Eyos/wiki/cmake-Configuration)
 - [Coding Convention](#)
 - [clang format settings](#)

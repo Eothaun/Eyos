@@ -1,0 +1,20 @@
+if(USE_VLD)
+    message(STATUS "Attempts to find VLD here:  ${VLD_INCLUDE_PATH};${VLD_LIB_PATH};${VLD_DLL_PATH}")
+    find_file(VLD_H NAMES vld.h PATHS ${VLD_INCLUDE_PATH})
+    find_file(VLD_LIB NAMES vld.lib PATHS ${VLD_LIB_PATH})
+    find_file(VLD_DLL NAMES vld_x64.dll PATHS ${VLD_DLL_PATH})
+    if(VLD_H AND VLD_LIB AND VLD_DLL)
+        add_library(vld STATIC IMPORTED)
+        set_target_properties(vld PROPERTIES
+            IMPORTED_LOCATION "${VLD_LIB}"
+            INTERFACE_INCLUDE_DIRECTORIES  ${VLD_INCLUDE_PATH}
+        )
+        target_include_directories(vld INTERFACE ${VLD_INCLUDE_PATH})
+        MESSAGE(STATUS "Found VLD")
+        MESSAGE(STATUS "VLD LIB: ${VLD_LIB}")
+        MESSAGE(STATUS "VLD DLL: ${VLD_DLL}")
+        MESSAGE(STATUS "VLD HEADER: ${VLD_H}")
+    else(VLD_H AND VLD_LIB AND VLD_DLL)
+        MESSAGE(FATAL_ERROR "Could not Found VLD: ${VLD_INCLUDE_PATH};${VLD_LIB_PATH};${VLD_DLL_PATH}")
+    endif(VLD_H AND VLD_LIB AND VLD_DLL)
+endif(USE_VLD)

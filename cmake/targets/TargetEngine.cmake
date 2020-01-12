@@ -9,12 +9,6 @@ add_library(Engine::Engine ALIAS Engine)
 target_link_libraries(Engine 
     PUBLIC
     glm
-)
-
-
-
-target_link_libraries(Engine 
-    PUBLIC
     enet
 )
 

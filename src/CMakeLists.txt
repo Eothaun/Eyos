@@ -3,10 +3,10 @@
 # see root/cmake folder!
 include(TargetEngine)
 include(TargetEyos)
-# include(TargetServer)
+include(TargetServer)
 
 # Installation of the engine and the game
-install(TARGETS Eyos Engine 
+install(TARGETS Eyos Engine EyosDedicatedServer
 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
 LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}
 )
