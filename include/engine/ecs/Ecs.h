@@ -150,6 +150,7 @@ namespace eyos
 		[[nodiscard]] bool IsValid(EntityId id) const
 		{
 			if (id.index < entityAmount) {
+				//TODO: If this returns false, it should still check if we are EcsTrackable right?
 				return id.version == entityVersions[id.index];
 			}
 			if constexpr (EcsTrackableEnabled) {
@@ -255,6 +256,7 @@ namespace eyos
 		{
 			uint16_t bits = 0;
 
+			//TODO: Simplify by using folding expression over bitwise or
 			(SetBitInBitsetFromType<Ts>(bits), ...);
 
 			return bits;

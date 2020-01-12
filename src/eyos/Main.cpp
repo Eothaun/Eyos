@@ -1,8 +1,9 @@
 #include <iostream>
 #include <memory>
+#include <filesystem>
 
 #include "bgfx_utils.h"
-#include <entry\entry.h>
+#include <entry\entry_p.h>
 #include <imgui\imgui.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -301,11 +302,35 @@ static void DrawPerformanceGraphInImgui()
 }
 #pragma endregion 
 
+void xmain(int _argc, const char** _argv)
+{
+	std::cerr << "ERROR: This is the entry point of CrossWindow. I am not using CrossWindow at the moment, try to remove CrossWindow in target_link_library!!!!" << std::endl;
+}
+
+static std::unique_ptr<gainput::InputManager> inputManager = nullptr;
+static std::unique_ptr<gainput::InputMap> inputMap = nullptr;
+#if BX_PLATFORM_WINDOWS
+static bool ProcessMessage(MSG& msg)
+{
+	inputManager->HandleMessage(msg);
+
+	return false;
+}
+#elif (BX_PLATFORM_BSD || BX_PLATFORM_LINUX || BX_PLATFORM_RPI)
+static bool ProcessMessage(XEvent& event)
+{
+	inputManager->HandleMessage(msg);
+
+	return false;
+}
+#endif
+
 int _main_(int _argc, char** _argv)
 {
 	using namespace eyos;
 
 	std::cout << "Hello CMake & BGFX :)\n";
+	std::cout << "Running from: " << std::filesystem::current_path() << '\n';
 
 	uint32_t width = 1280;
 	uint32_t height = 720;
@@ -322,11 +347,13 @@ int _main_(int _argc, char** _argv)
 	entry::WindowHandle defaultWindow = { 0 };
 	setWindowSize(defaultWindow, width, height);
 
-	gainput::InputManager inputManager{};
-	inputManager.SetDisplaySize(width, height);
-	auto keyboard = inputManager.CreateAndGetDevice<gainput::InputDeviceKeyboard>();
-	auto mouseId = inputManager.CreateDevice<gainput::InputDeviceMouse>();
-	gainput::InputMap inputMap{ inputManager };
+	inputManager = std::make_unique<gainput::InputManager>();
+	inputManager->SetDisplaySize(width, height);
+	auto keyboard = inputManager->CreateAndGetDevice<gainput::InputDeviceKeyboard>();
+	auto mouse = inputManager->CreateAndGetDevice<gainput::InputDeviceMouse>();
+	inputMap = std::make_unique<gainput::InputMap>( *inputManager );
+
+	entry::SetNativeMessageCallback(&ProcessMessage);
 
 	EyosEcs ecs{};
 
@@ -365,7 +392,10 @@ int _main_(int _argc, char** _argv)
 	
 	while (true)
 	{
-		inputManager.Update();
+		inputManager->Update();
+		if(keyboard->GetBool(gainput::KeyK)) {
+			std::cout << "K is pressed!!\n";
+		}
 		
 		bool shouldExit = entry::processEvents(width, height, renderer->m_debug, renderer->m_reset, &mouseState);
 		if (shouldExit)
@@ -393,7 +423,7 @@ int _main_(int _argc, char** _argv)
 
 		camera.DoFreecamMovement(0.5f, 0.01f, mouseState);
 		
-		if (mouseState.m_buttons[1]) {
+		if (mouse->GetBool(gainput::MouseButtonLeft)) {
 			eyos::Ray ray = camera.ScreenpointToRay(mouseState.m_mx, mouseState.m_my, width, height);
 			debugRenderer->AddLine(ray.origin, ray.origin + ray.direction * ray.maxDistance, 8.f, 0xFFFF00FF);
 		}

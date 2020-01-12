@@ -31,6 +31,8 @@ option(BUILD_WITH_CALNG_FORMAT "Build with clang format" OFF)
 option(BUILD_CXX_20 "C++20" OFF)
 option(GIT_SUBMODULE "Check submodules during build" ON)
 option(USE_PREBUILT_BGFX_TOOLS "If on, uses the .exe's in {EYOS_SOURCE_DIR}/tools for geometryc and shaderc, otherwise it will be compiled from source" ON)
+option(GAINPUT_SAMPLES "Build Samples for Gainput" OFF)
+option(GAINPUT_TESTS "Build Tests for Gainput" OFF)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(THIRD_PARTY "${CMAKE_CURRENT_SOURCE_DIR}/third_party")

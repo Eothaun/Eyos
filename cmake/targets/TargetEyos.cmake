@@ -1,3 +1,4 @@
+#xwin_add_executable(Eyos "")
 add_executable(Eyos)
 add_executable(Eyos::Eyos ALIAS Eyos)
 
@@ -67,8 +68,10 @@ target_link_libraries(Eyos
 	bgfx
 	bimg
 	bx
-	example-common
+#	example-common
+	bgfx_example_common_eyos
 	gainput
+#	CrossWindow
 )
 
 get_target_property(EYOS_RUNTIME_OUTPUT_DIR Eyos RUNTIME_OUTPUT_DIRECTORY)

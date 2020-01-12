@@ -26,3 +26,8 @@ endif(BGFX_SUPRESS_WARNING)
 
 add_subdirectory(gainput)
 target_include_directories(gainput INTERFACE "gainput/lib/include")
+
+# Not used at the moment, so disabled in build
+# add_subdirectory(CrossWindow)
+
+add_subdirectory(bgfx_example_common_eyos)
