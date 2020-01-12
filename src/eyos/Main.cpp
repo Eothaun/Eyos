@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <filesystem>
+#include <array>
 
 #include "bgfx_utils.h"
 #include <entry\entry_p.h>
@@ -334,7 +335,7 @@ int _main_(int _argc, char** _argv)
 {
 	using namespace eyos;
 
-	std::cout << "Hello CMake & BGFX :)\n";
+	std::cout << "Hello CMake & BGFX :)\n" << '\n';
 	std::cout << "Running from: " << std::filesystem::current_path() << '\n';
 
 	uint32_t width = 1280;
@@ -359,6 +360,37 @@ int _main_(int _argc, char** _argv)
 	inputMap = std::make_unique<gainput::InputMap>( *inputManager );
 
 	entry::SetNativeMessageCallback(&ProcessMessage);
+
+	{
+		auto& io = ImGui::GetIO();
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	}
+	if(false){
+		auto& io = ImGui::GetIO();
+		io.KeyMap[ImGuiKey_Tab] = gainput::KeyTab;
+		io.KeyMap[ImGuiKey_LeftArrow] = gainput::KeyLeft;
+		io.KeyMap[ImGuiKey_RightArrow] = gainput::KeyRight;
+		io.KeyMap[ImGuiKey_UpArrow] = gainput::KeyUp;
+		io.KeyMap[ImGuiKey_DownArrow] = gainput::KeyDown;
+		io.KeyMap[ImGuiKey_PageUp] = gainput::KeyPageUp;
+		io.KeyMap[ImGuiKey_PageDown] = gainput::KeyPageDown;
+		io.KeyMap[ImGuiKey_Home] = gainput::KeyHome;
+		io.KeyMap[ImGuiKey_End] = gainput::KeyEnd;
+		io.KeyMap[ImGuiKey_Insert] = gainput::KeyInsert;
+		io.KeyMap[ImGuiKey_Delete] = gainput::KeyDelete;
+		io.KeyMap[ImGuiKey_Backspace] = gainput::KeyBackSpace;
+		io.KeyMap[ImGuiKey_Space] = gainput::KeySpace;
+		io.KeyMap[ImGuiKey_Enter] = gainput::KeyReturn;
+		io.KeyMap[ImGuiKey_Escape] = gainput::KeyEscape;
+		io.KeyMap[ImGuiKey_KeyPadEnter] = gainput::KeyKpEnter;
+		io.KeyMap[ImGuiKey_A] = gainput::KeyA;
+		io.KeyMap[ImGuiKey_C] = gainput::KeyC;
+		io.KeyMap[ImGuiKey_V] = gainput::KeyV;
+		io.KeyMap[ImGuiKey_X] = gainput::KeyX;
+		io.KeyMap[ImGuiKey_Y] = gainput::KeyY;
+		io.KeyMap[ImGuiKey_Z] = gainput::KeyZ;
+	}
+	
 
 	EyosEcs ecs{};
 
@@ -456,6 +488,17 @@ int _main_(int _argc, char** _argv)
 			, uint16_t(width)
 			, uint16_t(height)
 		);
+		
+		if(false){
+			auto& io = ImGui::GetIO();
+			io.ClearInputCharacters();
+			std::array<gainput::DeviceButtonSpec, 16> buttons{};
+			auto buttonAmount = keyboard->GetAnyButtonDown(buttons.data(), buttons.size());
+			for (size_t i = 0; i < buttonAmount; ++i) {
+				std::cout << "Button #" << i << ": " << static_cast<int32_t>(buttons[i].buttonId) << '\n';
+				io.KeysDown[buttons[i].buttonId] = true;
+			}
+		}
 		ImGui::SetNextWindowSize(
 			ImVec2(300.0f, 210.0f)
 			, ImGuiCond_FirstUseEver
@@ -480,6 +523,10 @@ int _main_(int _argc, char** _argv)
 			}
 		}
 
+		ImGui::SetNextWindowPos(
+			ImVec2(350.0f, 50.0f)
+			, ImGuiCond_FirstUseEver
+		);
 		if(ImGui::Begin("Unit Spawn Menu", &openSpawnWindow)) {
 			ImGui::Text("Spawn knights:");
 
@@ -488,6 +535,19 @@ int _main_(int _argc, char** _argv)
 			if(ImGui::Button("Spawn units")) {
 				std::cout << "Spawning " << amount.x * amount.y << " Units\n";
 			}
+
+
+			static bool initialized = false;
+			static char c[128];
+			if (!initialized) {
+				memcpy_s(c, 128, "Hello World Test!", 18);
+				initialized = true;
+			}
+			// ImGui::ShowDemoWindow();
+			// std::cout << "Test Text: " << ImGui:: << '\n';
+			
+			
+			ImGui::InputTextMultiline("Test text", c, 128, {0, 0}, ImGuiInputTextFlags_Multiline);
 		}
 		ImGui::End();
 
