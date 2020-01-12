@@ -1,7 +1,11 @@
 #include <engine/net/NetEventHandler.hpp>
+
+#include <algorithm>
+
 #include <engine/net/Host.hpp>
 #include <engine/net/Peer.hpp>
 #include <engine/net/Packet.hpp>
+
 namespace eyos::net {
     //////////////////////////////////////
     /// NetEventHandler implementation ///
