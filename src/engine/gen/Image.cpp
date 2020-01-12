@@ -12,7 +12,7 @@ namespace eyos::gen
 		return x >= 1.0 ? 255 : x <= 0.0 ? 0 : static_cast<std::uint8_t>(x * 255.0 + 0.5);
 	}
 
-	void Image::Set(std::int32_t x, std::int32_t y, const RGB& color)
+	void Image::Set(std::int32_t x, std::int32_t y, const RGBI& color)
 	{
 		if (!InBounds(y, x))
 		{
@@ -58,7 +58,7 @@ namespace eyos::gen
 
 				for (std::int32_t x = 0; x < width; ++x)
 				{
-					const RGB& col = data[y * (unsigned __int64)width + x];
+					const RGBI& col = data[y * (unsigned __int64)width + x];
 					line[pos++] = ToUint8(col.b);
 					line[pos++] = ToUint8(col.g);
 					line[pos++] = ToUint8(col.r);

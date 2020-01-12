@@ -393,7 +393,7 @@ int _main_(int _argc, char** _argv)
 	{
 		for (int x = 0; x < image.Width(); ++x)
 		{
-			const gen::RGB color(perlin.octaveNoise0_1(x / fx, y / fy, octaves));
+			const gen::RGBI color(perlin.octaveNoise0_1(x / fx, y / fy, octaves));
 
 			image.Set(x, y, color);
 		}

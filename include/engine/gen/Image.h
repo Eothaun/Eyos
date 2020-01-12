@@ -29,22 +29,22 @@ namespace eyos::gen
 	static_assert(sizeof(BMPHeader) == 54);
 # pragma pack (pop)
 
-	struct RGB
+	struct RGBI
 	{
 		double r = 0.0;
 		double g = 0.0;
 		double b = 0.0;
-		RGB() = default;
-		explicit constexpr RGB(double _rgb) noexcept
+		RGBI() = default;
+		explicit constexpr RGBI(double _rgb) noexcept
 			: r(_rgb), g(_rgb), b(_rgb) {}
-		constexpr RGB(double _r, double _g, double _b) noexcept
+		constexpr RGBI(double _r, double _g, double _b) noexcept
 			: r(_r), g(_g), b(_b) {}
 	};
 
 	class EYOS_API Image
 	{
 	private:
-		std::vector<RGB> data;
+		std::vector<RGBI> data;
 		std::int32_t width = 0;
 		std::int32_t height = 0;
 
@@ -63,7 +63,7 @@ namespace eyos::gen
 			, width(width)
 			, height(height) {}
 
-		void Set(std::int32_t x, std::int32_t y, const RGB& color);
+		void Set(std::int32_t x, std::int32_t y, const RGBI& color);
 
 		int Width() const { return width; };
 		int Height() const { return height; };
