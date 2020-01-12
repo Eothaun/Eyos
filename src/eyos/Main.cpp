@@ -16,6 +16,11 @@
 #include "eyos/rendering/Camera.h"
 #include "eyos/rendering/RenderableTerrain.h"
 
+#include "engine/gen/PerlinNoise.h"
+#include "engine/gen/Image.h"
+#include <sstream>
+#include <bimg/decode.h>
+
 namespace cmps = eyos::rendering_components;
 
 static void WaitForEnter()
@@ -372,8 +377,47 @@ int _main_(int _argc, char** _argv)
 	}
 
 	std::cout << EntityId{ 420, 69 };
+
+	//////////////////
 	
-	bimg::ImageContainer* heightmap = imageLoad("maps/heightmap.png", bgfx::TextureFormat::R8);
+	gen::Image image(512, 512);
+	double frequency = 2.0;
+	int octaves = 2;
+	std::uint32_t seed = 2;
+
+	const gen::PerlinNoise perlin(seed);
+	const double fx = image.Width() / frequency;
+	const double fy = image.Height() / frequency;
+
+	for (int y = 0; y < image.Height(); ++y)
+	{
+		for (int x = 0; x < image.Width(); ++x)
+		{
+			const gen::RGB color(perlin.octaveNoise0_1(x / fx, y / fy, octaves));
+
+			image.Set(x, y, color);
+		}
+	}
+
+	std::stringstream ss;
+	
+	ss << 'f' << frequency << 'o' << octaves << '_' << seed << ".bmp";
+	std::string path = "../data/maps/";
+	path += ss.str();
+	if (image.SaveBMP(path.c_str()))
+	{
+		std::cout << "...saved \"" << ss.str() << "\"\n";
+	}
+	else
+	{
+		std::cout << "...failed\n";
+	}
+
+	uint32_t size = image.size;
+	std::vector<std::uint8_t> data = image.fLine;
+	///////////////////
+
+	bimg::ImageContainer* heightmap = imageLoad( path.c_str(), bgfx::TextureFormat::R8);
 	RenderableTerrain terrain{ static_cast<char*>(heightmap->m_data), heightmap->m_width, heightmap->m_height };
 	terrain.GenerateMesh();
 
