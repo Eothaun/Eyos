@@ -19,7 +19,7 @@ namespace eyos::gen
 			return;
 		}
 
-		data[y * (unsigned __int64)width + x] = color;
+		data[y * static_cast<std::uint64_t>(width) + x] = color;
 	}
 
 	bool Image::SaveBMP(const std::string& path)
@@ -58,7 +58,7 @@ namespace eyos::gen
 
 				for (std::int32_t x = 0; x < width; ++x)
 				{
-					const RGBI& col = data[y * (unsigned __int64)width + x];
+					const RGBI& col = data[y * static_cast<std::uint64_t>(width) + x];
 					line[pos++] = ToUint8(col.b);
 					line[pos++] = ToUint8(col.g);
 					line[pos++] = ToUint8(col.r);
