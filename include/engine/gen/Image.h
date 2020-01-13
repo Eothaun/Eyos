@@ -59,7 +59,7 @@ namespace eyos::gen
 
 		Image() = default;
 		Image(std::int32_t width, std::int32_t height)
-			: data((unsigned __int64)width * (unsigned __int64)height)
+			: data(static_cast<std::int64_t>(width) * static_cast<std::int64_t>(height))
 			, width(width)
 			, height(height) {}
 
