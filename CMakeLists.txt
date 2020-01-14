@@ -7,6 +7,9 @@ if(MSVC)
 add_compile_options(/W3 /MP)
 else()
 add_compile_options(-W -Wall)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_options( -fdiagnostics-format=json)
+    endif()
 endif()
 
 # add module path to CMAKE_MODULE_PATH
