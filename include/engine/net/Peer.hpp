@@ -46,7 +46,7 @@ public:
         if (enetPeer->data == nullptr)
             return std::nullopt;
         Data_ data {};
-        memcpy(&data, &enetPeer->data, sizeof(Data));
+        memcpy(&data, &enetPeer->data, sizeof(Data_));
         return { data };
     }
     template <typename Data>
