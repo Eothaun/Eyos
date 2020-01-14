@@ -365,7 +365,7 @@ int _main_(int _argc, char** _argv)
 		auto& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	}
-	if(false){
+	{
 		auto& io = ImGui::GetIO();
 		io.KeyMap[ImGuiKey_Tab] = gainput::KeyTab;
 		io.KeyMap[ImGuiKey_LeftArrow] = gainput::KeyLeft;
@@ -478,7 +478,7 @@ int _main_(int _argc, char** _argv)
 		{
 			break;
 		}
-		
+
 		imguiBeginFrame(mouseState.m_mx
 			, mouseState.m_my
 			, (mouseState.m_buttons[entry::MouseButton::Left] ? IMGUI_MBUT_LEFT : 0)
@@ -488,15 +488,31 @@ int _main_(int _argc, char** _argv)
 			, uint16_t(width)
 			, uint16_t(height)
 		);
-		
-		if(false){
+
+		std::cout << static_cast<int>('z') << '\n';
+
+		{
 			auto& io = ImGui::GetIO();
-			io.ClearInputCharacters();
+
+			std::fill_n(io.KeysDown, 512, false);
+
+			
+			io.KeyShift = keyboard->GetBool(gainput::KeyShiftL) | keyboard->GetBool(gainput::KeyShiftR);
+			io.KeyCtrl = keyboard->GetBool(gainput::KeyCtrlL) | keyboard->GetBool(gainput::KeyCtrlR);
+			io.KeyAlt = keyboard->GetBool(gainput::KeyAltL) | keyboard->GetBool(gainput::KeyAltR);
+			
 			std::array<gainput::DeviceButtonSpec, 16> buttons{};
 			auto buttonAmount = keyboard->GetAnyButtonDown(buttons.data(), buttons.size());
 			for (size_t i = 0; i < buttonAmount; ++i) {
 				std::cout << "Button #" << i << ": " << static_cast<int32_t>(buttons[i].buttonId) << '\n';
 				io.KeysDown[buttons[i].buttonId] = true;
+			}
+
+			char c = keyboard->GetNextCharacter();
+			while(c != 0) {
+				io.AddInputCharacter(c);
+				
+				c = keyboard->GetNextCharacter();
 			}
 		}
 		ImGui::SetNextWindowSize(
@@ -543,19 +559,20 @@ int _main_(int _argc, char** _argv)
 				memcpy_s(c, 128, "Hello World Test!", 18);
 				initialized = true;
 			}
-			// ImGui::ShowDemoWindow();
-			// std::cout << "Test Text: " << ImGui:: << '\n';
+			 ImGui::ShowDemoWindow();
+			 //std::cout << "Test Text: " << ImGui::GetVersion() << '\n';
 			
 			
 			ImGui::InputTextMultiline("Test text", c, 128, {0, 0}, ImGuiInputTextFlags_Multiline);
 		}
 		ImGui::End();
 
-		imguiEndFrame();
+		
 		renderer->BeginRender(camera);
 		renderer->RenderWorld(ecs, camera);
 		terrain.generatedMesh->submit(0, renderer->GetMeshShaderProgram(), glm::value_ptr(glm::mat4{ 1.0f }), BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP);
 		renderer->EndRender();
+		imguiEndFrame();
 	}
 
 	if (!renderer->Shutdown()) {
