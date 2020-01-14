@@ -12,9 +12,11 @@ jobs:
     - name: install openGL
       run: sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
     - name: create smlink
-      run: ln -s cmake-3.16.2-Linux-x86_64/bin/cmake cm && chmod 777 cm
+      run: cmake-3.16.2-Linux-x86_64/bin/cmake cm && chmod 777 cm
+    - name: Install correct version of gcc
+      run: sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test && sudo apt install gcc-9 g++-9 && sudo apt-get install --reinstall libpthread-stubs0-dev
     - name: configure
-      run: ls -l && ls -l src/ && ./cm .
+      run: ./cm .
     - name: make Engine
       run: make -j4 Engine
     - name: make DedicatedServer
