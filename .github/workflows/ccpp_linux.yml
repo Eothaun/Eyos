@@ -21,7 +21,5 @@ jobs:
       run: make -j4 Engine
     - name: make DedicatedServer
       run: make -j4 EyosDedicatedServer
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - name: make Eyos
+      run: make -j4 Eyos
