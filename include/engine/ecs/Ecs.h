@@ -73,7 +73,7 @@ namespace eyos
 				if constexpr (EcsTrackableEnabled) {
 					if (componentBitsets[entityAmount] & EcsTrackableMask) {
 						EntityId lastEntityId{ entityAmount, entityVersions[entityAmount] };
-						sparseToDense.insert_or_assign<EntityId::Index_t>(lastEntityId, id.index);
+						sparseToDense.insert_or_assign<EntityId::Index_t>(lastEntityId, EntityId::Index_t{ id.index });
 					}
 				}
 
@@ -230,7 +230,7 @@ namespace eyos
 			if constexpr (EcsTrackableEnabled) {
 				if (id.index < entityAmount) {
 					if (id.version == entityVersions[id.index]) {
-						return { id.index, true };
+						return { EntityId::Index_t{ id.index }, true };
 					}
 				}
 				if (id.index < entityVersions.size()) {

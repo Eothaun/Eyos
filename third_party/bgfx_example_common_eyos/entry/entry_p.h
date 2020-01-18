@@ -67,20 +67,18 @@
 
  //=== ADDED BY EYOS ====================================
 #if ENTRY_CONFIG_USE_NATIVE && BX_PLATFORM_WINDOWS
-#include <windows.h>
+// Forward declare the MSG struct from Windows.h
+using MSG = struct tagMSG;
 #elif ENTRY_CONFIG_USE_NATIVE && (BX_PLATFORM_BSD || BX_PLATFORM_LINUX || BX_PLATFORM_RPI)
-// I don't know which headers linux needs so I just copied all of them
-#define XK_MISCELLANY
-#define XK_LATIN1
-#include <X11/keysymdef.h>
-#include <X11/Xlib.h> // will include X11 which #defines None... Don't mess with order of includes.
-#include <X11/Xutil.h>
+// Forward declaring the XEvent union from Xlib.h
+using XEvent = union _XEvent;
 #endif
 //!== END OF EYOS =======================================
 
+
+//=== ADDED BY EYOS ==========================
 namespace entry
 {
-	//=== ADDED BY EYOS ==========================
 #if ENTRY_CONFIG_USE_NATIVE && BX_PLATFORM_WINDOWS
 	using NativeMessageCallback = bool(*)(MSG& msg);
 	void SetNativeMessageCallback(NativeMessageCallback cb);
@@ -92,7 +90,7 @@ namespace entry
 	// Not implemented, only windows and linux is supported!
 	void SetNativeMessageCallback(NativeMessageCallback cb) { (void)cb; }
 #endif
-	//!== END OF EYOS ============================
+//!== END OF EYOS ============================
 	
 	struct TinyStlAllocator
 	{

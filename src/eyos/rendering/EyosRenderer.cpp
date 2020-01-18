@@ -10,9 +10,9 @@
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 #include "bgfx_utils.h"
-#include <entry\entry.h>
-#include <imgui\imgui.h>
-#include <bx\timer.h>
+#include <entry/entry.h>
+#include <imgui/imgui.h>
+#include <bx/timer.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "eyos/rendering/VertexLayouts.h"

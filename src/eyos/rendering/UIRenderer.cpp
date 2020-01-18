@@ -2,10 +2,11 @@
 #include <cassert>
 #include <numeric>
 #include <array>
+#include <algorithm>
 
 #include "eyos/rendering/VertexLayouts.h"
 #include "entry/entry.h"
-#include <bx\timer.h>
+#include <bx/timer.h>
 
 
 namespace eyos {

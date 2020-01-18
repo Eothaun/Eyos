@@ -1,5 +1,5 @@
 #include "eyos/rendering/DebugRenderer.h"
-#include <bx\timer.h>
+#include <bx/timer.h>
 
 #include <array>
 #include <numeric>

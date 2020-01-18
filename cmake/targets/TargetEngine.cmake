@@ -37,4 +37,9 @@ if(WIN32)
     )
 endif()
 
+if(NOT MSVC)
+	# Appearently GCC needs this otherwise the filesystem is not linked? even though it's in the C++17 standard?
+	target_link_libraries(Engine PUBLIC stdc++fs)  # link to libstdc++fs
+endif()
+
 SetCppVersionOfTarget(Engine)

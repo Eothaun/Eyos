@@ -4,8 +4,8 @@
 #include <array>
 
 #include "bgfx_utils.h"
-#include <entry\entry_p.h>
-#include <imgui\imgui.h>
+#include <entry/entry_p.h>
+#include <imgui/imgui.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <gainput/gainput.h>
@@ -21,6 +21,15 @@
 #include "engine/gen/Image.h"
 #include <sstream>
 #include <bimg/decode.h>
+
+//!!!!!!!!!!!!
+//!!! NOTE !!!	THESE INCLUDES ARE AT THE BOTTOM BECAUSE OF MACRO REASONS, DON"T ADD #include s BELOW HERE!!!
+//!!!!!!!!!!!!
+#if ENTRY_CONFIG_USE_NATIVE && BX_PLATFORM_WINDOWS
+#include <windows.h>
+#elif ENTRY_CONFIG_USE_NATIVE && (BX_PLATFORM_BSD || BX_PLATFORM_LINUX || BX_PLATFORM_RPI)
+#include <X11/Xlib.h> // will include X11 which #defines None... Don't mess with order of includes.
+#endif
 
 namespace cmps = eyos::rendering_components;
 
@@ -323,9 +332,9 @@ static bool ProcessMessage(MSG& msg)
 	return false;
 }
 #elif (BX_PLATFORM_BSD || BX_PLATFORM_LINUX || BX_PLATFORM_RPI)
-static bool ProcessMessage(XEvent& event)
+static bool ProcessMessage(XEvent& evt)
 {
-	inputManager->HandleMessage(msg);
+	//inputManager->HandleMessage(evt);
 
 	return false;
 }
@@ -489,8 +498,6 @@ int _main_(int _argc, char** _argv)
 			, uint16_t(height)
 		);
 
-		std::cout << static_cast<int>('z') << '\n';
-
 		{
 			auto& io = ImGui::GetIO();
 
@@ -551,19 +558,6 @@ int _main_(int _argc, char** _argv)
 			if(ImGui::Button("Spawn units")) {
 				std::cout << "Spawning " << amount.x * amount.y << " Units\n";
 			}
-
-
-			static bool initialized = false;
-			static char c[128];
-			if (!initialized) {
-				memcpy_s(c, 128, "Hello World Test!", 18);
-				initialized = true;
-			}
-			 ImGui::ShowDemoWindow();
-			 //std::cout << "Test Text: " << ImGui::GetVersion() << '\n';
-			
-			
-			ImGui::InputTextMultiline("Test text", c, 128, {0, 0}, ImGuiInputTextFlags_Multiline);
 		}
 		ImGui::End();
 

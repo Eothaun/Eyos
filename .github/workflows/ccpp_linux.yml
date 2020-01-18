@@ -16,7 +16,7 @@ jobs:
     - name: install openGL
       run: sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
     - name: configure
-      run: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 && ./cm .
+      run: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 && ./cm . -DBUILD_ASSETS=OFF
     - name: make Engine
       run: make -j4 Engine
     - name: make DedicatedServer

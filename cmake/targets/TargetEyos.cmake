@@ -21,28 +21,30 @@ endif(USE_PREBUILT_BGFX_TOOLS)
 # BGFX settings:
 #
 
-file(GLOB_RECURSE SHADER_SRC_FILES RELATIVE ${PROJECT_SOURCE_DIR}/data/shaders/ "${PROJECT_SOURCE_DIR}/data/shaders/*.sc")
-foreach(SHADER_SRC_FILE ${SHADER_SRC_FILES})
-	message(STATUS "Shader File: ${SHADER_SRC_FILE}")
-	add_eyos_shader(${SHADER_SRC_FILE})
-endforeach()
+if(${BUILD_ASSETS})
+	file(GLOB_RECURSE SHADER_SRC_FILES RELATIVE ${PROJECT_SOURCE_DIR}/data/shaders/ "${PROJECT_SOURCE_DIR}/data/shaders/*.sc")
+	foreach(SHADER_SRC_FILE ${SHADER_SRC_FILES})
+		message(STATUS "Shader File: ${SHADER_SRC_FILE}")
+		add_eyos_shader(${SHADER_SRC_FILE})
+	endforeach()
+	
+	file(GLOB_RECURSE MODEL_FILES RELATIVE ${PROJECT_SOURCE_DIR}/data/ "${PROJECT_SOURCE_DIR}/data/*.obj")
+	foreach(MODEL_FILE ${MODEL_FILES})
+		message(STATUS "Model File: ${MODEL_FILE}")
+		add_eyos_mesh(${MODEL_FILE})
+	endforeach()
+	
+	file(GLOB_RECURSE SHADER_SRC_FILES_ABSOLUTE "${PROJECT_SOURCE_DIR}/data/shaders/*.sc")
+	file(GLOB_RECURSE MESH_FILES_ABSOLUTE "${PROJECT_SOURCE_DIR}/data/*.obj")
 
-file(GLOB_RECURSE MODEL_FILES RELATIVE ${PROJECT_SOURCE_DIR}/data/ "${PROJECT_SOURCE_DIR}/data/*.obj")
-foreach(MODEL_FILE ${MODEL_FILES})
-	message(STATUS "Model File: ${MODEL_FILE}")
-	add_eyos_mesh(${MODEL_FILE})
-endforeach()
+	# Add resource files to the project
+	target_sources(Eyos PRIVATE ${SHADER_SRC_FILES_ABSOLUTE} ${MESH_FILES_ABSOLUTE})
 
-file(GLOB_RECURSE SHADER_SRC_FILES_ABSOLUTE "${PROJECT_SOURCE_DIR}/data/shaders/*.sc")
-file(GLOB_RECURSE MESH_FILES_ABSOLUTE "${PROJECT_SOURCE_DIR}/data/*.obj")
-
-# Add resource files to the project
-target_sources(Eyos PRIVATE ${SHADER_SRC_FILES_ABSOLUTE} ${MESH_FILES_ABSOLUTE})
-
-# We also have asset files which don't have to be processed, but just copied over:
-file(COPY "${PROJECT_SOURCE_DIR}/data/fonts" DESTINATION "${PROJECT_SOURCE_DIR}/build")
-file(COPY "${PROJECT_SOURCE_DIR}/data/maps" DESTINATION "${PROJECT_SOURCE_DIR}/build")
-file(COPY "${PROJECT_SOURCE_DIR}/data/textures" DESTINATION "${PROJECT_SOURCE_DIR}/build")
+	# We also have asset files which don't have to be processed, but just copied over:
+	file(COPY "${PROJECT_SOURCE_DIR}/data/fonts" DESTINATION "${PROJECT_SOURCE_DIR}/build")
+	file(COPY "${PROJECT_SOURCE_DIR}/data/maps" DESTINATION "${PROJECT_SOURCE_DIR}/build")
+	file(COPY "${PROJECT_SOURCE_DIR}/data/textures" DESTINATION "${PROJECT_SOURCE_DIR}/build")
+endif()
 
 #
 # Eyos general settings:
