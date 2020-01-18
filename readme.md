@@ -1,6 +1,6 @@
 # Eyos
 
-Eyos is a student project to build a RTS that handles thousands (or millions) of units.
+Eyos is a student project to build a RTS that handles thousands (or millions) of units.  [Game Concept and Overview](https://github.com/Eothaun/Eyos/wiki/)
 
 ## Current Status
 
@@ -62,3 +62,12 @@ Please download the [Clang Format VS Extension](https://marketplace.visualstudio
 - [cmake configuration](https://github.com/Eothaun/Eyos/wiki/cmake-Configuration)
 - [Coding Convention](#)
 - [clang format settings](#)
+
+## Team
+
+- [Maiko Steeman](https://maikosteeman.dev/) Production, Engine Core Architecture & Graphics Programming
+- [Marjolein Kaal](http://www.marjoleinkaal.com/) AI,Level Generation & Gameplay Systems
+- [Simon Renger](https://simonrenger.com/) Network Architecture, Engine Architecture & QA Engineer 
+- [Hannes Vernooij](https://www.hannesvernooij.com/) Gameplay Systems & Graphics Programming
+
+Supervisor and special thanks go to [Bojan Endrovski](https://www.linkedin.com/in/bojanendrovski/)
