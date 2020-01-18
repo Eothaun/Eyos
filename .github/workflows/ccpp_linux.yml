@@ -28,4 +28,4 @@ jobs:
     - name: cmake with clang
       run: ./cm . -DBUILD_ASSETS=OFF -DUSE_CLANG=ON
     - name: make Engine (Clang)
-      run: make -j4 Engine
+      run: make clean && make -j4 Engine
