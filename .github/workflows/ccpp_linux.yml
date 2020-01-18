@@ -23,10 +23,9 @@ jobs:
       run: make -j4 EyosDedicatedServer
     - name: make Eyos (GCC)
       run: make -j4 Eyos
-    - name: setup clang toolchain
+    - name:  setup clang toolchain
       run: sudo apt-get update && wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add - && sudo apt-get install clang-10 clang-tools-10 clang-10-doc libclang-common-10-dev libclang-10-dev libclang1-10 clang-format-10 python-clang-10 clangd-10 && sudo apt-get install lld-10
     - name: cmake with clang
-       run: ./cm . -DBUILD_ASSETS=OFF -DUSE_CLANG=ON
+      run: ./cm . -DBUILD_ASSETS=OFF -DUSE_CLANG=ON
     - name: make Engine (Clang)
-       run:  make -j4 Engine
-
+      run: make -j4 Engine
