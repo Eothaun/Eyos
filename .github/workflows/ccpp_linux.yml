@@ -32,4 +32,4 @@ jobs:
     - name: make DedicatedServer (Clang)
       run: make -j4 EyosDedicatedServer
     - name: make Eyos (Clang)
-      run: make -j4 Eyos
+      run: make Eyos
