@@ -29,3 +29,7 @@ jobs:
       run: ./cm -DBUILD_ASSETS=OFF -DUSE_CLANG=ON .
     - name: make Engine (Clang)
       run: make clean && make -j4 Engine
+    - name: make DedicatedServer (Clang)
+      run: make -j4 EyosDedicatedServer
+    - name: make Eyos (Clang)
+      run: make -j4 Eyos
