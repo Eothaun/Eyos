@@ -16,7 +16,7 @@ jobs:
     - name: install openGL
       run: sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
     - name: configure
-      run: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 && sudo  chmod  777 tools/* && mkdir build && cd build && ./../cm  -DBUILD_ASSETS=OFF .. && sudo apt-get install libc6
+      run: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 && sudo  chmod  777 tools/* && mkdir build && cd build && ./../cm  -DBUILD_ASSETS=OFF ..
     - name: make Engine (GCC)
       run: cd build && make -j4 Engine
     - name: make DedicatedServer (GCC)
@@ -32,6 +32,6 @@ jobs:
     - name: make DedicatedServer (Clang)
       run: cd build && make -j4 EyosDedicatedServer
     - name: make tools (Clang)
-      run: cd build && make -j4 tools
+      run: cd build && make -j4 tools && make -j4 texturec && make -j4 texturev && make -j4 shaderc && make -j4 geometryc
     - name: make Eyos (Clang)
       run: cd build && make -j4 Eyos
