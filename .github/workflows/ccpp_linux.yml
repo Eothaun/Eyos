@@ -18,7 +18,7 @@ jobs:
     - name: configure
       run: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 && mkdir build && cd build && ./../cm -DBUILD_ASSETS=OFF ..
     - name: make Engine (GCC)
-      run: make -j4 Engine
+      run: ls -l && cd build && make -j4 Engine
     - name: make DedicatedServer (GCC)
       run: make -j4 EyosDedicatedServer
     - name: make Eyos (GCC)
