@@ -6,10 +6,17 @@ add_executable(Eyos::Eyos ALIAS Eyos)
 include(TargetEyosSourceList)
 
 if(USE_PREBUILT_BGFX_TOOLS)
-	set(TOOL_GEOMETRYC_EXE ${PROJECT_SOURCE_DIR}/tools/geometryc.exe)
-	set(TOOL_SHADERC_EXE ${PROJECT_SOURCE_DIR}/tools/shaderc.exe)
-	set(TOOL_TEXTUREC_EXE ${PROJECT_SOURCE_DIR}/tools/texturec.exe)
-	set(TOOL_TEXTUREV_EXE ${PROJECT_SOURCE_DIR}/tools/texturev.exe)
+
+	if(WIN32)
+		set(ending ".exe")
+	else(WIN32)
+		set(ending "")
+	endif(WIN32)
+
+	set(TOOL_GEOMETRYC_EXE ${PROJECT_SOURCE_DIR}/tools/geometryc${ending})
+	set(TOOL_SHADERC_EXE ${PROJECT_SOURCE_DIR}/tools/shaderc${ending})
+	set(TOOL_TEXTUREC_EXE ${PROJECT_SOURCE_DIR}/tools/texturec${ending})
+	set(TOOL_TEXTUREV_EXE ${PROJECT_SOURCE_DIR}/tools/texturev${ending})
 else()
 	set(TOOL_GEOMETRYC_EXE $<TARGET_FILE:geometryc>)
 	set(TOOL_SHADERC_EXE $<TARGET_FILE:shaderc>)
@@ -21,7 +28,8 @@ endif(USE_PREBUILT_BGFX_TOOLS)
 # BGFX settings:
 #
 
-if(${BUILD_ASSETS})
+if(BUILD_ASSETS)
+	message(STATUS "BUILD WITH ASSETS ${BUILD_ASSETS}")
 	file(GLOB_RECURSE SHADER_SRC_FILES RELATIVE ${PROJECT_SOURCE_DIR}/data/shaders/ "${PROJECT_SOURCE_DIR}/data/shaders/*.sc")
 	foreach(SHADER_SRC_FILE ${SHADER_SRC_FILES})
 		message(STATUS "Shader File: ${SHADER_SRC_FILE}")

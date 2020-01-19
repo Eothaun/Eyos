@@ -35,10 +35,20 @@ option(USE_CLANG "Make use of clang and the LLVM tool chain" OFF)
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(THIRD_PARTY "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
 set(ASSETS_DIR "${CMAKE_INSTALL_PREFIX}/data")
+set(TOOLS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tools")
 
 if(WIN32)
     set(VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
 endif(WIN32)
+
+# insert modules
+include(SetCppVersionOfTarget)
+include(GitSubmodule)
+include(target_source_local)
+include(add_eyos_mesh)
+include(add_eyos_shader)
+include(use_vld)
+include(ClangFormat)
 
 if(USE_CLANG AND NOT WIN32)
     message(STATUS "USE CLANG")
@@ -51,15 +61,6 @@ if(USE_CLANG AND NOT WIN32)
     SET (CMAKE_RANLIB  "/usr/bin/llvm-ranlib")
     SET (CMAKE_TOOLCHAIN_PREFIX "llvm-")
 endif(USE_CLANG AND NOT WIN32)
-
-# insert modules
-include(SetCppVersionOfTarget)
-include(GitSubmodule)
-include(target_source_local)
-include(add_eyos_mesh)
-include(add_eyos_shader)
-include(use_vld)
-include(ClangFormat)
 
 # get git submodules
 GitSubmodule()
