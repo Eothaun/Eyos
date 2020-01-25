@@ -1,6 +1,8 @@
 name: C/C++ CI Windows
 
-on: [push]
+on:
+  push:
+    tags-ignore: linux
 
 jobs:
   build-windows:
