@@ -30,7 +30,6 @@ option(USE_PREBUILT_BGFX_TOOLS "If on, uses the .exe's in {EYOS_SOURCE_DIR}/tool
 option(GAINPUT_SAMPLES "Build Samples for Gainput" OFF)
 option(GAINPUT_TESTS "Build Tests for Gainput" OFF)
 option(USE_VLD "Makes use of VLD" OFF)
-option(USE_CLANG "Make use of clang and the LLVM tool chain" OFF)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(THIRD_PARTY "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
@@ -49,18 +48,6 @@ include(add_eyos_mesh)
 include(add_eyos_shader)
 include(use_vld)
 include(ClangFormat)
-
-if(USE_CLANG AND NOT WIN32)
-    message(STATUS "USE CLANG")
-    SET (CMAKE_CXX_COMPILER "/usr/bin/clang++")
-    SET (CMAKE_C_COMPILER "/usr/bin/clang")
-    SET (CMAKE_AR      "/usr/bin/llvm-ar")
-    SET (CMAKE_LINKER  "/usr/bin/llvm-ld")
-    SET (CMAKE_NM      "/usr/bin/llvm-nm")
-    SET (CMAKE_OBJDUMP "/usr/bin/llvm-objdump")
-    SET (CMAKE_RANLIB  "/usr/bin/llvm-ranlib")
-    SET (CMAKE_TOOLCHAIN_PREFIX "llvm-")
-endif(USE_CLANG AND NOT WIN32)
 
 # get git submodules
 GitSubmodule()
