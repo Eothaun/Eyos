@@ -15,6 +15,7 @@ target_include_directories(EyosDedicatedServer
         PRIVATE
         Engine
         enet
+        eventpp
     )
 
 if(WIN32)
