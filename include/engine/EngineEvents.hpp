@@ -1,5 +1,7 @@
+#include "engine/Defines.hpp"
+
 namespace eyos {
-	struct EngineEvents {
+	struct EYOS_API EngineEvents {
 
 	};
 }

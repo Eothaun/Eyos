@@ -14,8 +14,6 @@
 
 #include "engine/ecs/EntityId.h"
 
-
-
 #include <entry/entry_p.h>
 #include <imgui/imgui.h>
 #include <bimg/decode.h>
@@ -88,7 +86,7 @@ void eyos::Application::Update()
 	FillEcs(world.esc, bunnyMesh, testMaterial);
 	auto terrain{ std::move(GenTerrain()) };
 
-
+	world.time.Initialize(0.0333,6);
 	while (true)
 	{
 		inputManager.Update();
@@ -119,6 +117,7 @@ void eyos::Application::Update()
 		renderer.RenderWorld(world.esc, camera);
 		renderer.EndRender();
 		imguiEndFrame();
+		world.time.Update();
 	}
 }
 

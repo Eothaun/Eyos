@@ -1,3 +1,5 @@
+#include <engine/Defines.hpp>
+
 namespace eyos {
-	class ResourceManager{};
+	class EYOS_API ResourceManager{};
 }
