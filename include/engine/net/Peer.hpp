@@ -39,9 +39,9 @@ public:
     Peer& operator=(Peer&& peer) noexcept;
 
 public:
-    net::Address Address();
+    [[nodiscard]] net::Address Address();
     template <typename Data_>
-    std::optional<Data_> Data()
+    [[nodiscard]] std::optional<Data_> Data()
     {
         if (enetPeer->data == nullptr)
             return std::nullopt;
