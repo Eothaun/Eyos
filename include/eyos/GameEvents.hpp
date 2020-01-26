@@ -1,0 +1,3 @@
+namespace eyos {
+	class GameEvents{};
+}

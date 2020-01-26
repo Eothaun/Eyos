@@ -1,0 +1,5 @@
+namespace eyos {
+	struct EngineEvents {
+
+	};
+}
