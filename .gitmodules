@@ -16,3 +16,6 @@
 [submodule "third_party/CrossWindow"]
 	path = third_party/CrossWindow
 	url = https://github.com/alaingalvan/CrossWindow.git
+[submodule "third_party/eventpp"]
+	path = third_party/eventpp
+	url = https://github.com/wqking/eventpp.git
