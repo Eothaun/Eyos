@@ -4,6 +4,7 @@
 include(TargetEngine)
 include(TargetEyos)
 include(TargetServer)
+include(TargetLobbyServer)
 
 # Installation of the engine and the game
 install(TARGETS Eyos Engine EyosDedicatedServer

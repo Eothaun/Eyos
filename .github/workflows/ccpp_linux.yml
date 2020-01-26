@@ -23,6 +23,8 @@ jobs:
       run: cd build && make -j4 Engine
     - name: make DedicatedServer (GCC)
       run: cd build && make -j4 EyosDedicatedServer
+    - name: make LobbyServer (GCC)
+      run: cd build && make -j4 EyosLobbyServer
     - name: make Eyos (GCC)
       run: cd build && make -j4 Eyos
     - name:  setup clang toolchain
@@ -33,5 +35,7 @@ jobs:
       run: cd build && make clean && make -j4 Engine
     - name: make DedicatedServer (Clang)
       run: cd build && make -j4 EyosDedicatedServer
+    - name: make LobbyServer (Clang)
+      run: cd build && make -j4 EyosLobbyServer
     - name: make Eyos (Clang)
       run: cd build && make -j4 Eyos
