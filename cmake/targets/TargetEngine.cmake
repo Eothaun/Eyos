@@ -10,6 +10,7 @@ target_link_libraries(Engine
     PUBLIC
     glm
     enet
+    eventpp
 )
 
 target_include_directories(Engine

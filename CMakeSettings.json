@@ -28,7 +28,7 @@
         },
         {
           "name": "BUILD_ASSETS",
-          "value": "False",
+          "value": "True",
           "type": "BOOL"
         }
       ]
