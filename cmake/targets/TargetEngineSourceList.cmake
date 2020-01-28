@@ -12,4 +12,5 @@ target_sources_local(Engine
     engine/net/Common.cpp
     engine/gen/PerlinNoise.cpp
     engine/gen/Image.cpp
+	engine/ecs/MTP_Utils.cpp
 )

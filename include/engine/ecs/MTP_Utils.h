@@ -1,8 +1,13 @@
 #pragma once
 #include <type_traits>
+#include <cstdint>
+#include "engine/Defines.hpp"
 
 
 namespace eyos {
+	template<typename... Ts>
+	struct Types{};
+	
 	template<typename T, int N, typename... Ts>
 	struct get_index_in_pack_impl;
 
@@ -42,5 +47,35 @@ namespace eyos {
 		else {
 			(void)f;
 		}
+	}
+
+	template<typename T>
+	struct MakeRefARefWrapper
+	{
+		using type = T;
+	};
+	template<typename T>
+	struct MakeRefARefWrapper<T&>
+	{
+		using type = std::reference_wrapper<T>;
+	};
+	
+	//! When T is a & type, a std::reference_wrapper<T> is returned, otherwise just T is returned
+	//! This is used internally to store reference types in a query
+	template<typename T>
+	using MakeRefARefWrapper_t = typename MakeRefARefWrapper<T>::type;
+
+	using TemplateTypeId = uint32_t;
+	
+	constexpr TemplateTypeId g_invalidTemplateTypeId = 0;
+
+	EYOS_API extern TemplateTypeId typeIdCounter;
+
+	template<typename T>
+	TemplateTypeId GetTemplateTypeId()
+	{
+		static TemplateTypeId templateTypeId = ++typeIdCounter;
+
+		return templateTypeId;
 	}
 }
