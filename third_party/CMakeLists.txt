@@ -31,3 +31,8 @@ target_include_directories(gainput INTERFACE "gainput/lib/include")
 # add_subdirectory(CrossWindow)
 
 add_subdirectory(bgfx_example_common_eyos)
+
+## create eventpp headeronly
+
+add_library(eventpp INTERFACE)
+target_include_directories(eventpp INTERFACE "eventpp/include/")

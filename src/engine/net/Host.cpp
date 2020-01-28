@@ -42,11 +42,11 @@ Peer Host::Connect(const net::Address& address, std::size_t channelCount, std::u
     assertm(peer_ptr != nullptr, "No available peers for initiating an ENet connection.");
     return { peer_ptr };
 }
-std::size_t Host::CountConnectedPeers() const noexcept
+[[nodiscard]] std::size_t Host::CountConnectedPeers() const noexcept
 {
     return CountPeers(ENetPeerState::ENET_PEER_STATE_CONNECTED);
 }
-std::size_t Host::CountPeers(ENetPeerState state) const noexcept
+[[nodiscard]] std::size_t Host::CountPeers(ENetPeerState state) const noexcept
 {
     auto count { 0 };
     auto peerCount{ static_cast<int>(enetHost->peerCount) };
@@ -58,7 +58,7 @@ std::size_t Host::CountPeers(ENetPeerState state) const noexcept
     return count;
 };
 
-auto Host::GetConnectedPeers() const noexcept
+[[nodiscard]] auto Host::GetConnectedPeers() const noexcept
 {
     std::vector<Peer> result {};
     auto peerCount{ static_cast<int>(enetHost->peerCount) };
@@ -70,7 +70,7 @@ auto Host::GetConnectedPeers() const noexcept
     }
     return result;
 }
-Peer Host::GetPeer(std::size_t peerIdx)
+[[nodiscard]] Peer Host::GetPeer(std::size_t peerIdx)
 {
     assertm(peerIdx < enetHost->peerCount, "Could not find peer in peer register");
     return { &enetHost->peers[peerIdx] };

@@ -54,10 +54,10 @@ public:
 
 public:
     Peer Connect(const Address& address, std::size_t channelCount, std::uint32_t data) const noexcept;
-    std::size_t CountConnectedPeers() const noexcept;
-    std::size_t CountPeers(ENetPeerState state) const noexcept;
-    auto GetConnectedPeers() const noexcept;
-    Peer GetPeer(std::size_t peerIdx);
+    [[nodiscard]] std::size_t CountConnectedPeers() const noexcept;
+    [[nodiscard]] std::size_t CountPeers(ENetPeerState state) const noexcept;
+    [[nodiscard]] auto GetConnectedPeers() const noexcept;
+    [[nodiscard]]  Peer GetPeer(std::size_t peerIdx);
     bool IsPeerValid(const Peer& peer);
 
 private:

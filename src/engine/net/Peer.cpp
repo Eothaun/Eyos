@@ -15,7 +15,7 @@ Peer::Peer(Peer&& peer) noexcept
     this->enetPeer = peer.enetPeer;
 }
 
-Address Peer::Address()
+[[nodiscard]] Address Peer::Address()
 {
     return { enetPeer->address };
 };

@@ -1,6 +1,5 @@
 #include <engine/net/Net.hpp>
 #include "engine/DebugHelper.hpp"
-
 #include <iostream>
 
 using namespace eyos;
