@@ -1,3 +1,4 @@
+#pragma once
 #include "engine/World.hpp"
 
 #include "eyos/ClientEcsType.h"
@@ -14,7 +15,7 @@ namespace eyos {
 		void Update();
 		void Shutdown();
 	private:
-		World<EyosEcs, GameEvents> world {};
+		World<EyosEcs> world {};
 		Renderer renderer {};
 		entry::WindowHandle windowHandle {0};
 		Input input {};

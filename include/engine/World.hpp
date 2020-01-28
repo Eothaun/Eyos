@@ -4,12 +4,11 @@
 #include <engine/Time.hpp>
 namespace eyos {
 	// TODO: Add missing system Manager
-	template<typename ESCT,typename GameEvents>
+	template<typename ESCT>
 	struct World {
 		ESCT esc;
 		ResourceManager resourceManager;
 		EngineEvents engineEvents;
-		GameEvents gameEvents;
 		Time time;
 	};
 }

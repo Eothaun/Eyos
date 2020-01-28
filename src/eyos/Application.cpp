@@ -115,6 +115,7 @@ void eyos::Application::Update()
 
 		renderer.BeginRender(camera);
 		renderer.RenderWorld(world.esc, camera);
+		terrain.generatedMesh->submit(0, renderer.GetMeshShaderProgram(), glm::value_ptr(glm::mat4{ 1.0f }), BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP);
 		renderer.EndRender();
 		imguiEndFrame();
 		world.time.Update();
