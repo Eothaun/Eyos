@@ -7,11 +7,11 @@
 #include "eyos/rendering/RenderableTerrain.h"
 #include "eyos/rendering/Material.h"
 
+//DEBUG IMGUI
+#include "eyos/ui/DebugTerrainUI.h"
+///
 
-#include "engine/gen/PerlinNoise.h"
-#include "engine/gen/Image.h"
-
-
+#include "engine/gen/MapGeneration.h"
 #include "engine/ecs/EntityId.h"
 
 #include <entry/entry_p.h>
@@ -20,7 +20,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <sstream>
 #include <array>
 
 /*
@@ -57,7 +56,7 @@ static void DrawPerformanceGraphInImgui();
 static bool Bar(float _width, float _maxWidth, float _height, const ImVec4& _color);
 namespace cmps = eyos::rendering_components;
 void FillEcs(eyos::EyosEcs& ecs, Mesh* mesh, eyos::Material mat);
-eyos::RenderableTerrain GenTerrain();
+eyos::RenderableTerrain GenTerrain(std::string path);
 void InputTests(const eyos::Input& input);
 void ImguiInput(const eyos::Input& input, const entry::MouseState& mouseState);
 ///////// END DEBUG //////////////
@@ -84,7 +83,7 @@ void eyos::Application::Update()
 	Mesh* bunnyMesh = meshLoad(/*"meshes/Swordsman2.bin"*/ "meshes/Knight.bin");
 	Material testMaterial{};
 	FillEcs(world.esc, bunnyMesh, testMaterial);
-	auto terrain{ std::move(GenTerrain()) };
+	auto terrain{ std::move((GenTerrain("../data/maps/"))) };
 
 	world.time.Initialize(0.0333,6);
 	while (true)
@@ -98,6 +97,13 @@ void eyos::Application::Update()
 			break;
 		}
 		ImguiInput(input, mouseState);
+		std::string path;
+		eyos::gen::DrawTerrainToolImgui(path);
+		if (path != "")
+		{
+			terrain = std::move(GenTerrain(path));
+		}
+
 		camera.DoFreecamMovement(0.5f, 0.01f, mouseState);
 
 		if (mouse->GetBool(gainput::MouseButtonLeft)) {
@@ -493,49 +499,20 @@ void FillEcs(eyos::EyosEcs& ecs,Mesh* mesh, eyos::Material mat)
 }
 
 /////////////// TERRAIN DEBUG STUFF
-eyos::RenderableTerrain GenTerrain() {
-	using namespace  eyos;
-	gen::Image image(512, 512);
-	double frequency = 2.0;
-	int octaves = 2;
-	std::uint32_t seed = 2;
-
-	const gen::PerlinNoise perlin(seed);
-	const double fx = image.Width() / frequency;
-	const double fy = image.Height() / frequency;
-
-	for (int y = 0; y < image.Height(); ++y)
+eyos::RenderableTerrain GenTerrain(std::string path) 
+{
+	if (path == "../data/maps/" || path == "")
 	{
-		for (int x = 0; x < image.Width(); ++x)
-		{
-			const gen::RGBI color(perlin.octaveNoise0_1(x / fx, y / fy, octaves));
-
-			image.Set(x, y, color);
-		}
+		path = eyos::gen::MapGeneration::GenHeightMap(path);
 	}
-
-	std::stringstream ss;
-
-	ss << 'f' << frequency << 'o' << octaves << '_' << seed << ".bmp";
-	std::string path = "../data/maps/";
-	path += ss.str();
-	if (image.SaveBMP(path.c_str()))
-	{
-		std::cout << "...saved \"" << ss.str() << "\"\n";
-	}
-	else
-	{
-		std::cout << "...failed\n";
-	}
-
-	uint32_t size = image.size;
-	std::vector<std::uint8_t> data = image.fLine;
 	///////////////////
-
-	bimg::ImageContainer* heightmap = imageLoad(path.c_str(), bgfx::TextureFormat::R8); // MEMORY LEAK ?
-	RenderableTerrain terrain{ static_cast<char*>(heightmap->m_data), heightmap->m_width, heightmap->m_height };
-	terrain.GenerateMesh();
-	return terrain;
+	if (path != "")
+	{
+		bimg::ImageContainer* heightmap = imageLoad(path.c_str(), bgfx::TextureFormat::R8); // <--Memory Leak?
+		eyos::RenderableTerrain terrain{ static_cast<char*>(heightmap->m_data), heightmap->m_width, heightmap->m_height };
+		terrain.GenerateMesh();
+		return terrain;
+	}
 }
 
 ////////////// INPUT DEBUG STUFF
