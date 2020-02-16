@@ -1,6 +1,6 @@
 //#pragma warning(disable : 26812)
 //// our own implementation:
-//#include <engine/Eyos.hpp>
+//#include <engine/Eyos.h>
 //
 //// third party libs:
 //#include <glm/glm.hpp>

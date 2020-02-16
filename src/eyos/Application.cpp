@@ -1,4 +1,4 @@
-#include "eyos/Application.hpp"
+#include "eyos/Application.h"
 #include "eyos/rendering/Camera.h"
 
 #include "bgfx_utils.h"
@@ -36,7 +36,7 @@ static bool ProcessMessage(MSG& msg)
 #elif (BX_PLATFORM_BSD || BX_PLATFORM_LINUX || BX_PLATFORM_RPI)
 static bool ProcessMessage(XEvent& evt)
 {
-	g_inputManager->HandleMessage(evt);
+	//g_inputManager->HandleMessage(evt); FIXME: Why does this not exists?
 	return false;
 }
 #endif

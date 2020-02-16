@@ -1,6 +1,7 @@
-#include "engine/Time.hpp"
+#include "engine/Time.h"
 
 #include <chrono>
+#include <cmath>
 
 namespace
 {

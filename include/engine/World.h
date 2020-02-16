@@ -1,7 +1,7 @@
 #include <engine/ecs/Ecs.h>
-#include <engine/ResourceManager.hpp>
-#include <engine/EngineEvents.hpp>
-#include <engine/Time.hpp>
+#include <engine/ResourceManager.h>
+#include <engine/EngineEvents.h>
+#include <engine/Time.h>
 namespace eyos {
 	// TODO: Add missing system Manager
 	template<typename ESCT>

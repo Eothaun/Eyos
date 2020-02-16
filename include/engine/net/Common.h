@@ -4,8 +4,8 @@ Eyos Source Code License v1.0
 Copyright (c) 2019-2020 Simon Renger, Maiko Steeman, Marjolein Kaal, Hannes Vernooij
 Last updated on February 16th, 2020.
 */
-#include "NetFwd.hpp"
-#include "Packet.hpp"
+#include "NetFwd.h"
+#include "Packet.h"
 #include <string>
 #include <vector>
 #include <cstddef>
@@ -41,10 +41,10 @@ EYOS_API bool SendPacket(const net::Peer& peer, net::Packet&& packet);
 EYOS_API void Broadcast(const net::Host& peer, net::Packet&& packet, std::uint8_t channelID);
 
 template <typename PacketHeaderType>
-[[nodiscard]] net::Packet CreateEmptyPacket(const PacketHeaderType packetType, std::size_t length)
+[[nodiscard]] net::Packet CreateEmptyPacket(const PacketHeaderType packetType)
 {
     static_assert(std::is_enum_v<PacketHeaderType>, "Is not an Enum!");
-    auto size { length + sizeof(PacketHeaderType) };
+    auto size {sizeof(PacketHeaderType) };
     std::vector<std::byte> buffer { size };
     memcpy(buffer.data(), &packetType, sizeof(PacketHeaderType));
     auto* enetPacket { enet_packet_create(buffer.data(), size, ENET_PACKET_FLAG_RELIABLE) };
@@ -52,32 +52,5 @@ template <typename PacketHeaderType>
     return { enetPacket };
 };
 
-template <typename PacketHeaderType, typename Data>
-[[nodiscard]] net::Packet CreatePacket(const PacketHeaderType packetType, const Data& data, std::size_t length)
-{
-    static_assert(std::is_enum_v<PacketHeaderType>, "Is not an Enum!");
-    auto size { length + sizeof(PacketHeaderType) };
-    std::vector<std::byte> buffer { size };
-    memcpy(buffer.data(), &packetType, sizeof(PacketHeaderType));
-    memcpy(&buffer[sizeof(PacketHeaderType)], &data, length);
-    auto* enetPacket { enet_packet_create(buffer.data(), size, ENET_PACKET_FLAG_RELIABLE) };
-    assertm(enetPacket != nullptr, "Could not create a packet");
-    return { enetPacket };
-};
 
-template <typename Data>
-[[nodiscard]] net::Packet&& AppendToPacket(net::Packet&& packet, const Data& data, std::size_t length)
-{
-    enet_packet_resize(packet.enetPacket, length);
-    memcpy(&packet.enetPacket->data[packet.enetPacket->dataLength], &data, length);
-    return std::move(packet);
-}
-
-template <typename Data>
-[[nodiscard]] net::Packet&& AppendToPacket(net::Packet&& packet, Data&& data, std::size_t length)
-{
-    enet_packet_resize(packet.enetPacket, length);
-    memcpy(&packet.enetPacket->data[packet.enetPacket->dataLength], &data, length);
-    return std::move(packet);
-}
 }

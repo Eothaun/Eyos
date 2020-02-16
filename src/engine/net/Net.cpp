@@ -1,4 +1,4 @@
-#include <engine/net/NetFwd.hpp>
+#include <engine/net/NetFwd.h>
 
 namespace eyos::net {
     void InitializeNetwork()

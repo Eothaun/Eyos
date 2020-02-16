@@ -1,5 +1,5 @@
 #pragma once
-#include "engine/Defines.hpp"
+#include "engine/Defines.h"
 
 namespace eyos {
 	struct EYOS_API EngineEvents {

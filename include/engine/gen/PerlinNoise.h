@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/Defines.hpp"
+#include "engine/Defines.h"
 
 #include <cstdint>
 #include <numeric>

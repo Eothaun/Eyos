@@ -1,10 +1,10 @@
 #pragma once
-#include "engine/World.hpp"
+#include "engine/World.h"
 
 #include "eyos/ClientEcsType.h"
-#include "eyos/GameEvents.hpp"
+#include "eyos/GameEvents.h"
 #include "eyos/rendering/EyosRenderer.h"
-#include "eyos/Input.hpp"
+#include "eyos/Input.h"
 
 
 namespace eyos {

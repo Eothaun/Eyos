@@ -4,7 +4,7 @@ Eyos Source Code License v1.0
 Copyright (c) 2019-2020 Simon Renger, Maiko Steeman, Marjolein Kaal, Hannes Vernooij
 Last updated on February 16th, 2020.
 */
-#include "NetFwd.hpp"
+#include "NetFwd.h"
 #include <string>
 namespace eyos::net {
 /*

@@ -1,11 +1,11 @@
 #pragma once
 #include <iostream>
-#include "engine/Defines.hpp"
+#include "engine/Defines.h"
 
 namespace eyos::gen
 {
 
-	static class EYOS_API MapGeneration
+	class EYOS_API MapGeneration
 	{
 	public:
 		MapGeneration();
@@ -17,9 +17,6 @@ namespace eyos::gen
 			int octaves = 2, 
 			std::uint32_t seed = 2
 		);
-
-	private:
-
 	};
 
 }

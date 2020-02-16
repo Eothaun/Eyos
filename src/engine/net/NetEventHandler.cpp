@@ -1,10 +1,10 @@
-#include <engine/net/NetEventHandler.hpp>
+#include <engine/net/NetEventHandler.h>
 
 #include <algorithm>
 
-#include <engine/net/Host.hpp>
-#include <engine/net/Peer.hpp>
-#include <engine/net/Packet.hpp>
+#include <engine/net/Host.h>
+#include <engine/net/Peer.h>
+#include <engine/net/Packet.h>
 
 namespace eyos::net {
     //////////////////////////////////////
