@@ -1,3 +1,4 @@
+#pragma once
 #include "engine/Defines.hpp"
 
 namespace eyos {
