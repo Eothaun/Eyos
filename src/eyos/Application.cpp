@@ -48,7 +48,7 @@ void eyos::Application::Init(int _argc, char** _argv)
 	entry::setWindowSize(windowHandle, width, height);
 	input.Init(width, height);
 	g_inputManager = &input.inputManager;
-	entry::SetNativeMessageCallback(&ProcessMessage);
+	//entry::SetNativeMessageCallback(&ProcessMessage); FIXME: why does this not work under Linux?
 }
 
 ////////// DEBUG //////////////
