@@ -104,7 +104,7 @@ void eyos::Application::Update()
 			terrain = std::move(GenTerrain(path));
 		}
 
-		camera.DoFreecamMovement(0.5f, 0.01f, mouseState);
+		camera.DoMovement(.5f, 0.01f, mouseState);
 
 		if (mouse->GetBool(gainput::MouseButtonLeft)) {
 			eyos::Ray ray = camera.ScreenpointToRay(mouseState.m_mx, mouseState.m_my, width, height);
