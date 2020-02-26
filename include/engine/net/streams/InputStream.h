@@ -43,10 +43,10 @@ class EYOS_API InputStream{
     private:
     InputStream(std::byte* buffer, std::size_t size, Allocator& allocator = GetNetworkAllocator());
     private:
+    Allocator& allocator;
     std::size_t head{};
     std::size_t capacity{};
     std::byte* buffer{};
-    Allocator& allocator;
     template <typename PacketHeaderType>
     friend Packet StreamToPacket(const PacketHeaderType packetType, InputStream&& stream);
     friend EYOS_API OutputStream ToStream(InputStream&& stream);

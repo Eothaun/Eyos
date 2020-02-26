@@ -4,14 +4,11 @@
 #include "engine/net/Common.h"
 #include "engine/net/Utility.h"
 #include "engine/Defines.h"
+
+#include <cstddef>
 #include <functional>
 
 namespace {
-	template<typename T>
-	void get_data_from_buffer(std::byte* buffer,T& value, std::size_t& head, std::size_t capacity, std::function<T(T)> function) {
-		get_data_from_buffer(buffer, value, head, capacity);
-		value = function(value);
-	}
 	template<typename T>
 	void get_data_from_buffer(std::byte * buffer,T & value, std::size_t & head, std::size_t capacity) {
 			assertm(head < capacity, "You cannot retrive, Stream is at its capacity");
@@ -19,9 +16,14 @@ namespace {
 			value = *eyos::net::bit_cast<T*>(&buffer[head]);
 			head += sizeof(T);
 	}
+	template<typename T>
+	void get_data_from_buffer(std::byte* buffer, T& value, std::size_t& head, std::size_t capacity, std::function<T(T)> function) {
+		get_data_from_buffer(buffer, value, head, capacity);
+		value = function(value);
+	}
 }
 
-eyos::net::OutputStream::OutputStream(std::byte* otherBuffer, std::size_t size,Allocator& allocator) :capacity{ size }, allocator{ allocator }{
+eyos::net::OutputStream::OutputStream(std::byte* otherBuffer, std::size_t size,Allocator& allocator) :allocator{ allocator },capacity{ size }{
 	buffer = bit_cast<std::byte*>(allocator.Allocate(size));
 	memcpy(buffer, otherBuffer, size);
 }

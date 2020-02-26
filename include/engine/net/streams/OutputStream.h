@@ -40,10 +40,11 @@ namespace eyos::net {
         [[nodiscard]] Allocator& GetAllocator();
     private:
         OutputStream(std::byte* buffer, std::size_t size,Allocator& allocator = GetNetworkAllocator());
+    private:
+        Allocator& allocator;
         std::size_t head{};
         std::size_t capacity{};
         std::byte* buffer{};
-        Allocator& allocator;
         template <typename PacketHeaderType>
         friend OutputStream StreamFromPacket(const PacketHeaderType packetType, Packet&& stream);
         friend EYOS_API OutputStream ToStream(InputStream&& stream);
