@@ -3,6 +3,8 @@
 #include <engine/net/Host.h>
 #include <engine/net/Peer.h>
 #include <engine/net/Packet.h>
+#include <engine/net/streams/OutputStream.h>
+#include <engine/net/streams/InputStream.h>
 
 namespace eyos::net {
     // Free function implementation
@@ -58,5 +60,14 @@ namespace eyos::net {
     void Broadcast(const Host& peer, Packet&& packet, std::uint8_t channelID)
     {
         enet_host_broadcast(peer.enetHost, channelID, packet.enetPacket);
+    }
+
+    EYOS_API OutputStream ToStream(InputStream&& stream)
+    {
+        return { stream.buffer,stream.capacity,stream.GetAllocator() };
+    }
+    EYOS_API InputStream ToStream(OutputStream&& stream)
+    {
+        return { stream.buffer,stream.capacity,stream.GetAllocator() };
     }
 }

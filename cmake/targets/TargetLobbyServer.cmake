@@ -14,7 +14,6 @@ target_include_directories(EyosLobbyServer
     target_link_libraries(EyosLobbyServer 
         PRIVATE
         Engine
-        enet
     )
 
 if(WIN32)
@@ -28,12 +27,6 @@ set_target_properties( EyosLobbyServer
 
 use_vld(EyosLobbyServer)
 
-    target_link_libraries(EyosLobbyServer 
-        PRIVATE
-        ws2_32.lib
-        winmm.lib
-    )
-
 else(WIN32)
 set_target_properties( EyosLobbyServer
     PROPERTIES
@@ -42,4 +35,5 @@ set_target_properties( EyosLobbyServer
 	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/bin"
 )
 endif(WIN32)
+
 SetCppVersionOfTarget(EyosLobbyServer)

@@ -9,6 +9,7 @@ Last updated on February 16th, 2020.
 #include <string>
 #include <vector>
 #include <cstddef>
+#include  <type_traits>
 namespace eyos::net {
 //Free functions
 [[nodiscard]] EYOS_API net::Address CreateAddress(std::uint16_t port, std::uint32_t host = ENET_HOST_ANY);
@@ -49,8 +50,60 @@ template <typename PacketHeaderType>
     memcpy(buffer.data(), &packetType, sizeof(PacketHeaderType));
     auto* enetPacket { enet_packet_create(buffer.data(), size, ENET_PACKET_FLAG_RELIABLE) };
     assertm(enetPacket != nullptr, "Could not create a packet");
-    return { enetPacket };
+    return { enetPacket,size};
 };
 
+template <typename Data>
+[[nodiscard]]  Packet&& AppendToPacket(Packet&& packet, const Data& data, std::size_t length)
+{
+    auto privSize{ packet.enetPacket->dataLength };
+    auto newSize{ privSize + length };
+    enet_packet_resize(packet.enetPacket, newSize);
+    memcpy(&packet.enetPacket->data[privSize], &data, length);
+    return std::move(packet);
+}
+
+template <typename Data>
+[[nodiscard]]  Packet&& AppendToPacket(Packet&& packet, const Data& data)
+{
+    auto privSize{ packet.enetPacket->dataLength };
+    auto newSize{ privSize + sizeof(Data) };
+    enet_packet_resize(packet.enetPacket, newSize);
+    memcpy(&packet.enetPacket->data[privSize], &data,sizeof(Data));
+    return std::move(packet);
+}
+
+template <typename Data>
+[[nodiscard]]  Packet&& AppendToPacket(Packet&& packet, Data&& data, std::size_t length)
+{
+    auto privSize{ packet.enetPacket->dataLength };
+    auto newSize{ privSize + length };
+    enet_packet_resize(packet.enetPacket, newSize);
+    memcpy(&packet.enetPacket->data[privSize], &data, length);
+    return std::move(packet);
+}
+
+template <typename Data>
+[[nodiscard]]  Packet&& AppendToPacket(Packet&& packet, Data&& data)
+{
+    auto privSize{ packet.enetPacket->dataLength };
+    auto newSize{ privSize + sizeof(Data) };
+    enet_packet_resize(packet.enetPacket, newSize);
+    memcpy(&packet.enetPacket->data[privSize], &data, sizeof(Data));
+    return std::move(packet);
+}
+
+template <typename PacketHeaderType>
+[[nodiscard]]  Packet StreamToPacket(const PacketHeaderType packetType,InputStream&& stream) {
+    auto packet{ CreateEmptyPacket(packetType) };
+    auto privSize{ packet.enetPacket->dataLength };
+    auto newSize{ privSize + stream.capacity };
+    enet_packet_resize(packet.enetPacket, newSize);
+    memcpy(&packet.enetPacket->data[privSize], stream.buffer, stream.capacity);
+    return packet;
+}
+
+[[nodiscard]] EYOS_API OutputStream ToStream(InputStream&& stream);
+[[nodiscard]] EYOS_API InputStream ToStream(OutputStream&& stream);
 
 }

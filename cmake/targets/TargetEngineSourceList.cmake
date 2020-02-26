@@ -11,6 +11,9 @@ target_sources_local(Engine
     engine/net/Packet.cpp
     engine/net/NetEventHandler.cpp
     engine/net/Common.cpp
+    engine/net/streams/InputStream.cpp
+    engine/net/streams/OutputStream.cpp
+    engine/net/Allocator.cpp
     engine/gen/PerlinNoise.cpp
     engine/gen/Image.cpp
     engine/gen/MapGeneration.cpp

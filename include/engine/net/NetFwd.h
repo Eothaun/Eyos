@@ -16,6 +16,9 @@ Last updated on February 16th, 2020.
 #include <memory>
 namespace eyos::net {
 
+	class EYOS_API Allocator;
+
+	EYOS_API Allocator& GetNetworkAllocator();
 	EYOS_API void InitializeNetwork();
 	EYOS_API void DeinitializeNetwork();
 
@@ -24,6 +27,10 @@ namespace eyos::net {
 	class EYOS_API Host;
 	class EYOS_API Peer;
 	class EYOS_API Packet;
+	class EYOS_API InputStream;
+	class EYOS_API OutputStream;
+
+
 
 	using Event = ENetEvent;
 
