@@ -1,4 +1,4 @@
-name: C/C++ CI Windows
+name: C/C++ Tests Windows
 
 on: [push]
 
@@ -27,6 +27,6 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config DEBUG --target Tests
+      run: cmake --build . --config DEBUG --target ALL_BUILD
     - name: Run Tests
-      run: ctest
+      run: cd build && ctest
