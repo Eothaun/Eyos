@@ -5,12 +5,7 @@ Copyright (c) 2019-2020 Simon Renger, Maiko Steeman, Marjolein Kaal, Hannes Vern
 Last updated on February 16th, 2020.
 */
 #include <engine/Defines.h>
-
-#pragma warning(push)
-#pragma warning(disable : 6385)
-#pragma warning(disable : 26451)
 #include <enet/enet.h>
-#pragma warning(pop)
 
 #include <cstdint>
 #include <memory>

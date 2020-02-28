@@ -35,7 +35,7 @@ eyos::net::InputStream::InputStream(std::size_t bufferSize) : allocator{ GetNetw
 	buffer = bit_cast<std::byte*>(allocator.Allocate(capacity));
 }
 
-eyos::net::InputStream::InputStream(std::byte* otherBuffer, std::size_t size, Allocator& allocator) : capacity{ size }, allocator{ allocator }{
+eyos::net::InputStream::InputStream(std::byte* otherBuffer, std::size_t size, Allocator& allocator) : allocator{ allocator }, capacity{ size }{
 	buffer = bit_cast<std::byte*>(allocator.Allocate(size));
 	memcpy(buffer, otherBuffer, size);
 }

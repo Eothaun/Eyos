@@ -4,13 +4,15 @@ Eyos Source Code License v1.0
 Copyright (c) 2019-2020 Simon Renger
 Last updated on February 16th, 2020.
 */
+
+#include "engine/Defines.h"
+#include "engine/net/Packet.h"
+
 #include <cstddef>
 #include <cstdint>
 #include <string>
-#include "engine/Defines.h"
 namespace eyos::net {
 // forward declareations:
-class Packet;
 class OutputStream;
 class Allocator;
 EYOS_API Allocator& GetNetworkAllocator();
@@ -25,7 +27,7 @@ class EYOS_API InputStream{
     InputStream(const InputStream&) = delete;
     InputStream(InputStream&&) = default;
     InputStream& operator=(const InputStream&) = delete;
-    InputStream& operator=(InputStream&&) = default;
+    InputStream& operator=(InputStream&&) = delete;
     public:
     [[nodiscard]]std::size_t GetRemainingSize();
     [[nodiscard]] Allocator& GetAllocator();
@@ -52,4 +54,15 @@ class EYOS_API InputStream{
     friend EYOS_API OutputStream ToStream(InputStream&& stream);
     friend EYOS_API InputStream ToStream(OutputStream&& stream);
 };
+
+template <typename PacketHeaderType>
+[[nodiscard]]  Packet StreamToPacket(const PacketHeaderType packetType,InputStream&& stream) {
+    auto packet{ CreateEmptyPacket(packetType) };
+    auto privSize{ packet.enetPacket->dataLength };
+    auto newSize{ privSize + stream.capacity };
+    enet_packet_resize(packet.enetPacket, newSize);
+    memcpy(&packet.enetPacket->data[privSize], stream.buffer, stream.capacity);
+    return packet;
+}
+
 }

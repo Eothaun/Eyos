@@ -93,16 +93,6 @@ template <typename Data>
     return std::move(packet);
 }
 
-template <typename PacketHeaderType>
-[[nodiscard]]  Packet StreamToPacket(const PacketHeaderType packetType,InputStream&& stream) {
-    auto packet{ CreateEmptyPacket(packetType) };
-    auto privSize{ packet.enetPacket->dataLength };
-    auto newSize{ privSize + stream.capacity };
-    enet_packet_resize(packet.enetPacket, newSize);
-    memcpy(&packet.enetPacket->data[privSize], stream.buffer, stream.capacity);
-    return packet;
-}
-
 [[nodiscard]] EYOS_API OutputStream ToStream(InputStream&& stream);
 [[nodiscard]] EYOS_API InputStream ToStream(OutputStream&& stream);
 

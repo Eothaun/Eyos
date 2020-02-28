@@ -47,11 +47,11 @@ std::string Address::Ip(std::size_t length)
 }
 std::string Address::Ip6()
 {
-    return std::move(Ip(71));
+    return Ip(71);
 }
 std::string Address::Ip4()
 {
-    return std::move(Ip(35));
+    return Ip(35);
 }
 std::uint16_t Address::Port() { return enetAddress.port; }
 }

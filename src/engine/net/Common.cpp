@@ -40,7 +40,7 @@ namespace eyos::net {
         std::uint32_t outgoingBandwidth)
     {
         auto address{ CreateAddress(port, "127.0.0.1") };
-        return std::move(CreateHost(address, peerCount, channelLimit, incomingBandwidth, outgoingBandwidth));
+        return CreateHost(address, peerCount, channelLimit, incomingBandwidth, outgoingBandwidth);
     };
 
     [[nodiscard]] Host_ptr CreateClient(
@@ -49,7 +49,7 @@ namespace eyos::net {
         std::uint32_t incomingBandwidth,
         std::uint32_t outgoingBandwidth)
     {
-        return std::move(CreateHost(peerCount, channelLimit, incomingBandwidth, outgoingBandwidth));
+        return CreateHost(peerCount, channelLimit, incomingBandwidth, outgoingBandwidth);
     };
 
     bool SendPacket(const Peer& peer, Packet&& packet)

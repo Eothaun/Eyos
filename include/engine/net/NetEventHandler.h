@@ -110,13 +110,17 @@ namespace eyos::net {
     private:
         std::size_t GetHostIdx(const net::Host&);
     private:
-#pragma warning(push)
-#pragma warning(disable : 4251)
+#if !defined(__clang__)
+    #pragma warning(push)
+    #pragma warning(disable : 4251)
+#endif
         std::unordered_map<std::size_t, std::size_t> hosts{};
         std::vector<std::vector<std::function<ConnectCallback>>> onConnect{};
         std::vector<std::vector<std::function<ConnectCallback>>> onDisconnect{};
         std::vector<std::vector<std::function<PacketCallback>>> onReceive{};
-#pragma warning(push)
+#if !defined(__clang__)
+    #pragma warning(push)
+#endif
         std::hash<const Host*> hashFunc{};
     };
 }

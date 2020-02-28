@@ -4,10 +4,12 @@ Eyos Source Code License v1.0
 Copyright (c) 2019-2020 Simon Renger
 Last updated on February 16th, 2020.
 */
+#include "engine/Defines.h"
+
 #include <cstddef>
 #include <cstdint>
 #include <string>
-#include "engine/Defines.h"
+
 namespace eyos::net {
     // forward declareations:
     class Packet;
@@ -22,7 +24,7 @@ namespace eyos::net {
         OutputStream(const OutputStream&) = delete;
         OutputStream(OutputStream&&) = default;
         OutputStream& operator=(const OutputStream&) = delete;
-        OutputStream& operator=(OutputStream&&) = default;
+        OutputStream& operator=(OutputStream&&) = delete;
         ~OutputStream();
     public:
         [[nodiscard]] std::size_t GetRemainingSize();
