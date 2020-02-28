@@ -17,5 +17,3 @@
 	path = third_party/eventpp
 	url = https://github.com/wqking/eventpp.git
 [submodule "third_party/enet"]
-	path = third_party/enet
-	url = https://github.com/Eothaun/enet.git
