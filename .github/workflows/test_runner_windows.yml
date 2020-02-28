@@ -23,10 +23,8 @@ jobs:
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=DEBUG
 
-    - name: Build
+    - name: Run Tests
       working-directory: ${{runner.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config DEBUG --target ALL_BUILD
-    - name: Run Tests
-      run: cd build && ctest
+      run: cmake --build . --config DEBUG --target RUN_TESTS
