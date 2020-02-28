@@ -1,4 +1,4 @@
-name: C/C++ CI Linux
+name: C/C++ Build Linux (gcc9)
 
 on: [push]
 
@@ -19,23 +19,11 @@ jobs:
       run: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 && sudo  chmod  777 tools/* && mkdir build && cd build && ./../cm  -DBUILD_ASSETS=OFF ..
     - name: make tools
       run: cd build && make -j4 tools && make -j4 texturec && make -j4 texturev && make -j4 shaderc && make -j4 geometryc
-    - name: make Engine (GCC)
+    - name: make Engine
       run: cd build && make -j4 Engine
-    - name: make DedicatedServer (GCC)
+    - name: make DedicatedServer
       run: cd build && make -j4 EyosDedicatedServer
-    - name: make LobbyServer (GCC)
+    - name: make LobbyServer
       run: cd build && make -j4 EyosLobbyServer
-    - name: make Eyos (GCC)
-      run: cd build && make -j4 Eyos
-    - name:  setup clang toolchain
-      run: sudo add-apt-repository -y "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main"  && sudo apt-get update && wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add - && sudo apt-get install clang-9 clang-tools-9 clang-9-doc libclang-common-9-dev libclang-9-dev libclang1-9 clang-format-9 python-clang-9 && sudo apt-get install lld-9
-    - name: cmake with clang
-      run: cd build && sudo rm -r * && export CXX=/usr/bin/clang++ && export C=/usr/bin/clang && ./../cm -DBUILD_ASSETS=OFF ..
-    - name: make Engine (Clang)
-      run: cd build && make clean && make -j4 Engine
-    - name: make DedicatedServer (Clang)
-      run: cd build && make -j4 EyosDedicatedServer
-    - name: make LobbyServer (Clang)
-      run: cd build && make -j4 EyosLobbyServer
-    - name: make Eyos (Clang)
+    - name: make Eyos
       run: cd build && make -j4 Eyos
