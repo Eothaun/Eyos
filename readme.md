@@ -4,8 +4,16 @@ Eyos is a student project to build a RTS that handles thousands (or millions) of
 
 ## Current Status
 
-![status](https://github.com/Eothaun/Eyos/workflows/C%2FC%2B%2B%20CI%20Linux/badge.svg)
-![status](https://github.com/Eothaun/Eyos/workflows/C%2FC%2B%2B%20CI%20Windows/badge.svg)
+### Build
+
+![C/C++ Build Windows (MSVC)](https://github.com/Eothaun/Eyos/workflows/C/C++%20Build%20Windows%20(MSVC)/badge.svg)
+![C/C++ Build Linux (gcc9)](https://github.com/Eothaun/Eyos/workflows/C/C++%20Build%20Linux%20(gcc9)/badge.svg)
+![C/C++ Build Linux (clang9)](https://github.com/Eothaun/Eyos/workflows/C/C++%20Build%20Linux%20(clang9)/badge.svg)
+
+### Testing
+
+![C/C++ Tests Linux](https://github.com/Eothaun/Eyos/workflows/C/C++%20Tests%20Linux/badge.svg)
+![C/C++ Tests Windows](https://github.com/Eothaun/Eyos/workflows/C/C++%20Tests%20Windows/badge.svg)
 
 ## How to build
 
