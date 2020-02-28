@@ -56,7 +56,7 @@ namespace eyos
 		return true;
 	}
 
-	bool Terrain::Intersect(const eyos::Ray& pos, glm::vec3* outHitPos, glm::vec3* outHitNormal) const
+	bool Terrain::Intersect([[maybe_unused]]const eyos::Ray& pos, [[maybe_unused]]glm::vec3* outHitPos, [[maybe_unused]]glm::vec3* outHitNormal) const
 	{
 		assert(false && "Not implemented yet");
 		return false;
