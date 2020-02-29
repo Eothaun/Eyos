@@ -78,4 +78,19 @@ namespace eyos {
 
 		return templateTypeId;
 	}
+
+	template<typename T>
+	void DeconstructThing(void* ptr) {
+		reinterpret_cast<T*>(ptr)->~T();
+	}
+
+	template<typename T>
+	void ConstructThing(void* ptr) {
+		new (ptr) T();
+	}
+
+	template<typename T>
+	void MoveThing(void* to, void* from) {
+		*reinterpret_cast<T*>(to) = std::move(*reinterpret_cast<T*>(from));
+	}
 }

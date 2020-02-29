@@ -11,6 +11,7 @@ target_link_libraries(Engine
     glm
     enet
     eventpp
+	flat.hpp
 )
 
 target_include_directories(Engine

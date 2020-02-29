@@ -36,3 +36,5 @@ add_subdirectory(bgfx_example_common_eyos)
 
 add_library(eventpp INTERFACE)
 target_include_directories(eventpp INTERFACE "eventpp/include/")
+
+add_subdirectory(flat.hpp)

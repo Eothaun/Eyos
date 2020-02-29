@@ -2,9 +2,12 @@
 #include <type_traits>
 #include <cassert>
 #include <tuple>
+#include <array>
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+
+#include <flat.hpp/flat_map.hpp>
 
 #include "EntityId.h"
 #include "MTP_Utils.h"
@@ -23,18 +26,67 @@ namespace eyos
 	{
 		static_assert(sizeof...(TCmps) <= 16, "For now, our amount of components has to fit in a uint16_t");
 
+		struct EcsChunk
+		{
+			using ErasedConstructor = void(*)(void* ptr);
+			using ErasedDeconstructor = void(*)(void* ptr);
+			using ErasedMoveAssignment = void(*)(void* to, void* from);
+			
+			std::vector<std::byte> data{};
+			TemplateTypeId typeId = g_invalidTemplateTypeId;
+			uint32_t componentSize = 0;
+			ErasedConstructor componentConstructor = nullptr;
+			ErasedDeconstructor componentDeconstructor = nullptr;
+			ErasedMoveAssignment componentMoveAssign = nullptr;
+			bool isTrivial = false;
+
+			[[nodiscard]] uint32_t size() const
+			{
+				return data.size() / componentSize;
+			}
+		};
+
+		template<typename T>
+		void AddChunk()
+		{
+			auto currentChunk = chunkAmount++;
+			
+			EcsChunk chunk{};
+			chunk.typeId = GetTemplateTypeId<T>();
+			chunk.componentSize = sizeof(T);
+			chunk.componentConstructor = ConstructThing<T>;
+			chunk.componentDeconstructor = DeconstructThing<T>;
+			chunk.componentMoveAssign = MoveThing<T>;
+			chunk.isTrivial = std::is_trivial_v<T>;
+			
+			componentArrays[currentChunk] = chunk;
+		}
+		
 	public:
+		using ComponentBitset_t = uint16_t;
+
 		static constexpr int EcsTrackableCmpIndex = get_index_in_pack<ecs_builtins::EcsTrackable, TCmps...>;
 		static constexpr bool EcsTrackableEnabled = EcsTrackableCmpIndex != -1;
-		static constexpr uint16_t EcsTrackableMask = EcsTrackableEnabled ? (1 << EcsTrackableCmpIndex) : 0;
+		static constexpr ComponentBitset_t EcsTrackableMask = EcsTrackableEnabled ? (1 << EcsTrackableCmpIndex) : 0;
 
+		static constexpr uint32_t MaxEcsChunks = sizeof(ComponentBitset_t);
+		
 	public:
-		Ecs() = default;
+		Ecs()
+		{
+			componentTypeToIndex.reserve(sizeof(ComponentBitset_t));
+		}
 
-		EntityId::Index_t entityAmount{};
+		EntityId::Index_t entityAmount{0};
+		flat_hpp::flat_map<TemplateTypeId, uint8_t> componentTypeToIndex{};
+
+		uint8_t chunkAmount = 0;
+		std::array<EcsChunk, MaxEcsChunks> componentArrays{};
+		
 		std::tuple<std::vector<TCmps>...> componentTuple{};
-		std::vector<uint16_t> componentBitsets{};
+		std::vector<ComponentBitset_t> componentBitsets{};
 		std::vector<EntityId::Version_t> entityVersions{};
+		
 		std::unordered_map<EntityId, EntityId::Index_t> sparseToDense{};
 
 		EntityId CreateEntity()
@@ -211,7 +263,7 @@ namespace eyos
 			//TODO: this is quite aggressive, but most performant. And .shrink_to_fit() can be called by the user later.
 			entities.reserve(entityAmount);
 
-			constexpr uint16_t componentMask = CreateBitsetFromTypes<Ts...>();
+			constexpr ComponentBitset_t componentMask = CreateBitsetFromTypes<Ts...>();
 			for (EntityId::Index_t i = 0; i < entityAmount; ++i) {
 				if ((componentBitsets[i] & componentMask) == componentMask) {
 					entities.push_back(EntityId{ i, entityVersions[i] });
@@ -252,23 +304,20 @@ namespace eyos
 		}
 
 		template<typename... Ts>
-		static constexpr uint16_t CreateBitsetFromTypes()
+		static constexpr ComponentBitset_t CreateBitsetFromTypes()
 		{
-			uint16_t bits = 0;
-
-			//TODO: Simplify by using folding expression over bitwise or
-			(SetBitInBitsetFromType<Ts>(bits), ...);
+			ComponentBitset_t bits = (GetBitInBitsetFromType<Ts>() | ...);
 
 			return bits;
 		}
 
 		template<typename T>
-		static constexpr void SetBitInBitsetFromType(uint16_t& bits)
+		static constexpr ComponentBitset_t GetBitInBitsetFromType()
 		{
 			constexpr int index = get_index_in_pack<T, TCmps...>;
 			static_assert(index != -1, "Cannot find type T in TCmps!");
 
-			bits |= (1 << index);
+			return (1 << index);
 		}
 	};
 }
