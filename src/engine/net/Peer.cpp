@@ -1,5 +1,5 @@
-#include <engine/net/Peer.hpp>
-#include <engine/net/Address.hpp>
+#include <engine/net/Peer.h>
+#include <engine/net/Address.h>
 namespace eyos::net {
 ///////////////////////////////
 /// Peer  implementation   ///

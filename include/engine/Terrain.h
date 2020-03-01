@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <glm/glm.hpp>
 
-#include "engine/Defines.hpp"
+#include "engine/Defines.h"
 #include "geometry/Ray.h"
 
 

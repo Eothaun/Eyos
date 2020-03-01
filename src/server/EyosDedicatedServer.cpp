@@ -1,5 +1,5 @@
-#include <engine/net/Net.hpp>
-#include "engine/DebugHelper.hpp"
+#include <engine/net/Net.h>
+#include "engine/DebugHelper.h"
 #include <iostream>
 
 using namespace eyos;
@@ -15,9 +15,10 @@ net::Host_ptr Server() {
 void OnConnect(net::Peer&& who,[[maybe_unused]] std::uint32_t eventData) {
     std::cout << "onConnect() Data: "<< eventData <<"\n";
     const net::Peer who_{ std::move(who)};
+    /*
     if (net::SendPacket(who_, net::CreatePacket(PacketType::Send, 42, sizeof(int)))) {
         std::cout << "Maybe Send!\n";
-    }
+    }*/
 }
 void OnDisconnect(net::Peer&& who,[[maybe_unused]] std::uint32_t eventData) {
     std::cout << "OnDisconnect()\n";
@@ -26,8 +27,8 @@ void OnReceive(net::Packet&& packet, [[maybe_unused]] std::uint32_t eventData) {
     std::cout << "OnPacketReceive()\n";
     std::cout << "EventData: " << eventData << '\n';
     int data{};
-    data = packet.Data<PacketType,int>(std::move(data));
-    std::cout << "Data: " << data << '\n';
+    //data = packet.Data<PacketType,int>(std::move(data));
+    //std::cout << "Data: " << data << '\n';
 }
 
 struct Lobby {

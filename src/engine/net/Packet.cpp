@@ -1,4 +1,4 @@
-#include <engine/net/Packet.hpp>
+#include <engine/net/Packet.h>
 
 namespace eyos::net {
 /////////////////////////////////

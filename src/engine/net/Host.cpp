@@ -1,6 +1,6 @@
-#include <engine/net/Host.hpp>
-#include <engine/net/Address.hpp>
-#include <engine/net/Peer.hpp>
+#include <engine/net/Host.h>
+#include <engine/net/Address.h>
+#include <engine/net/Peer.h>
 
 namespace eyos::net {
 

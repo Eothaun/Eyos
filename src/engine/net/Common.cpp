@@ -1,8 +1,10 @@
-#include <engine/net/Common.hpp>
-#include <engine/net/Address.hpp>
-#include <engine/net/Host.hpp>
-#include <engine/net/Peer.hpp>
-#include <engine/net/Packet.hpp>
+#include <engine/net/Common.h>
+#include <engine/net/Address.h>
+#include <engine/net/Host.h>
+#include <engine/net/Peer.h>
+#include <engine/net/Packet.h>
+#include <engine/net/streams/OutputStream.h>
+#include <engine/net/streams/InputStream.h>
 
 namespace eyos::net {
     // Free function implementation
@@ -38,7 +40,7 @@ namespace eyos::net {
         std::uint32_t outgoingBandwidth)
     {
         auto address{ CreateAddress(port, "127.0.0.1") };
-        return std::move(CreateHost(address, peerCount, channelLimit, incomingBandwidth, outgoingBandwidth));
+        return CreateHost(address, peerCount, channelLimit, incomingBandwidth, outgoingBandwidth);
     };
 
     [[nodiscard]] Host_ptr CreateClient(
@@ -47,7 +49,7 @@ namespace eyos::net {
         std::uint32_t incomingBandwidth,
         std::uint32_t outgoingBandwidth)
     {
-        return std::move(CreateHost(peerCount, channelLimit, incomingBandwidth, outgoingBandwidth));
+        return CreateHost(peerCount, channelLimit, incomingBandwidth, outgoingBandwidth);
     };
 
     bool SendPacket(const Peer& peer, Packet&& packet)
@@ -58,5 +60,14 @@ namespace eyos::net {
     void Broadcast(const Host& peer, Packet&& packet, std::uint8_t channelID)
     {
         enet_host_broadcast(peer.enetHost, channelID, packet.enetPacket);
+    }
+
+    EYOS_API OutputStream ToStream(InputStream&& stream)
+    {
+        return { stream.buffer,stream.capacity,stream.GetAllocator() };
+    }
+    EYOS_API InputStream ToStream(OutputStream&& stream)
+    {
+        return { stream.buffer,stream.capacity,stream.GetAllocator() };
     }
 }

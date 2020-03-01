@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <ostream>
-#include "engine/Defines.hpp"
+#include "engine/Defines.h"
 
 namespace eyos {
 	struct EYOS_API EntityId

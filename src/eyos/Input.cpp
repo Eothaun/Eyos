@@ -1,4 +1,4 @@
-#include "eyos/Input.hpp"
+#include "eyos/Input.h"
 #include <imgui/imgui.h>
 
 void eyos::Input::Init(std::uint32_t width, std::uint32_t height) {

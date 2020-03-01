@@ -1,4 +1,4 @@
-name: C/C++ CI Windows
+name: C/C++ Tests Windows
 
 on: [push]
 
@@ -21,10 +21,15 @@ jobs:
       # Note the current convention is to use the -S and -B options here to specify source 
       # and build directories, but this is only available with CMake 3.13 and higher.  
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=DEBUG
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=DEBUG -DBUILD_TESTING=ON -DBUILD_ASSETS=OFF
 
-    - name: Build
+    - name: Build Tests
       working-directory: ${{runner.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config DEBUG --target ALL_BUILD
+      run: cmake --build . --config DEBUG --target Tests
+    - name: Run Tests
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      # I could also just use ctest here....
+      run: cmake --build . --config DEBUG --target RUN_TESTS
