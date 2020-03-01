@@ -6,7 +6,6 @@
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
-#include <new>
 
 #include <flat.hpp/flat_map.hpp>
 
@@ -26,7 +25,8 @@ namespace eyos
 	//! Generic Ecs class with a compile time switch to enable Tracking of entities
 	//! Usually, just use the Alias `Ecs`
 	template<bool EcsTrackable>
-	class alignas(std::hardware_constructive_interference_size) ConfigurableEcs
+	// Align with the cache line
+	class alignas(64) ConfigurableEcs
 	{
 	public:
 		using ComponentBitset_t = uint16_t;
