@@ -1,6 +1,8 @@
 #pragma once
 #include <type_traits>
 #include <cstdint>
+#include <utility>
+
 #include "engine/Defines.hpp"
 
 
@@ -92,5 +94,11 @@ namespace eyos {
 	template<typename T>
 	void MoveThing(void* to, void* from) {
 		*reinterpret_cast<T*>(to) = std::move(*reinterpret_cast<T*>(from));
+	}
+
+	template<typename T1, typename T2>
+	void SwapThings(void* a, void* b)
+	{
+		std::swap(*reinterpret_cast<T1*>(a), *reinterpret_cast<T2*>(b));
 	}
 }

@@ -6,11 +6,13 @@
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+#include <new>
 
 #include <flat.hpp/flat_map.hpp>
 
 #include "EntityId.h"
 #include "MTP_Utils.h"
+#include "ComponentArray.h"
 
 
 namespace eyos
@@ -21,85 +23,69 @@ namespace eyos
 		static_assert(std::is_empty_v<EcsTrackable>, "The ecs depends on this being a 0 size struct");
 	}
 
-	template<typename... TCmps>
-	class Ecs
+	//! Generic Ecs class with a compile time switch to enable Tracking of entities
+	//! Usually, just use the Alias `Ecs`
+	template<bool EcsTrackable>
+	class alignas(std::hardware_constructive_interference_size) ConfigurableEcs
 	{
-		static_assert(sizeof...(TCmps) <= 16, "For now, our amount of components has to fit in a uint16_t");
-
-		struct EcsChunk
-		{
-			using ErasedConstructor = void(*)(void* ptr);
-			using ErasedDeconstructor = void(*)(void* ptr);
-			using ErasedMoveAssignment = void(*)(void* to, void* from);
-			
-			std::vector<std::byte> data{};
-			TemplateTypeId typeId = g_invalidTemplateTypeId;
-			uint32_t componentSize = 0;
-			ErasedConstructor componentConstructor = nullptr;
-			ErasedDeconstructor componentDeconstructor = nullptr;
-			ErasedMoveAssignment componentMoveAssign = nullptr;
-			bool isTrivial = false;
-
-			[[nodiscard]] uint32_t size() const
-			{
-				return data.size() / componentSize;
-			}
-		};
-
-		template<typename T>
-		void AddChunk()
-		{
-			auto currentChunk = chunkAmount++;
-			
-			EcsChunk chunk{};
-			chunk.typeId = GetTemplateTypeId<T>();
-			chunk.componentSize = sizeof(T);
-			chunk.componentConstructor = ConstructThing<T>;
-			chunk.componentDeconstructor = DeconstructThing<T>;
-			chunk.componentMoveAssign = MoveThing<T>;
-			chunk.isTrivial = std::is_trivial_v<T>;
-			
-			componentArrays[currentChunk] = chunk;
-		}
-		
 	public:
 		using ComponentBitset_t = uint16_t;
+		static constexpr ComponentBitset_t LastComponentIndex = sizeof(ComponentBitset_t) * 8 - 1;
+		static constexpr ComponentBitset_t LastComponentBit = 1 << LastComponentIndex;
 
-		static constexpr int EcsTrackableCmpIndex = get_index_in_pack<ecs_builtins::EcsTrackable, TCmps...>;
-		static constexpr bool EcsTrackableEnabled = EcsTrackableCmpIndex != -1;
-		static constexpr ComponentBitset_t EcsTrackableMask = EcsTrackableEnabled ? (1 << EcsTrackableCmpIndex) : 0;
+		static constexpr bool EcsTrackableEnabled = EcsTrackable;
+		// only -1 is an invalid index
+		static constexpr int EcsTrackableCmpIndex = EcsTrackableEnabled ? 0 : -1;
+		// flags are stored in the far side of the bitmap
+		// And Trackable is guaranteed to be the first one flag (if enabled)
+		static constexpr ComponentBitset_t EcsTrackableMask = EcsTrackableEnabled ? (1 << (sizeof(ComponentBitset_t) * 8 - 1)) : 0;
 
-		static constexpr uint32_t MaxEcsChunks = sizeof(ComponentBitset_t);
+		//! Change this variable to a higher variable to allow more components
+		static constexpr uint32_t MaxComponentTypes = 16;
+		static_assert(MaxComponentTypes <= sizeof(ComponentBitset_t)*8);
 		
 	public:
-		Ecs()
+		ConfigurableEcs()
 		{
-			componentTypeToIndex.reserve(sizeof(ComponentBitset_t));
+			componentTypeToIndex.reserve(MaxComponentTypes);
+			if constexpr(EcsTrackableEnabled) {
+				RegisterTypes<ecs_builtins::EcsTrackable>();
+			}
 		}
 
-		EntityId::Index_t entityAmount{0};
 		flat_hpp::flat_map<TemplateTypeId, uint8_t> componentTypeToIndex{};
-
-		uint8_t chunkAmount = 0;
-		std::array<EcsChunk, MaxEcsChunks> componentArrays{};
+		std::array<ComponentArray, MaxComponentTypes> componentArrays{};
+		//! The amount of component arrays filled in the `componentArrays` array variable.
+		uint8_t componentArrayAmount = 0;
+		uint8_t flagTypesAmount = 0;
 		
-		std::tuple<std::vector<TCmps>...> componentTuple{};
+		EntityId::Index_t entityAmount{ 0 };
+		//std::tuple<std::vector<TCmps>...> componentTuple{};
 		std::vector<ComponentBitset_t> componentBitsets{};
 		std::vector<EntityId::Version_t> entityVersions{};
 		
 		std::unordered_map<EntityId, EntityId::Index_t> sparseToDense{};
 
+		template<typename... Ts>
+		void RegisterTypes() {
+			(RegisterSingleType<Ts>(),...);
+		}
+
 		EntityId CreateEntity()
 		{
 			++entityAmount;
 
-			static_for<0, sizeof...(TCmps)>([&](auto i) constexpr {
-				std::get<i.value>(componentTuple).resize(entityAmount);
-				});
+			//static_for<0, sizeof...(TCmps)>([&](auto i) constexpr {
+			//	std::get<i.value>(componentTuple).resize(entityAmount);
+			//});
+			for (uint32_t i = 0; i < componentArrayAmount; ++i) {
+				componentArrays[i].resize_erased(entityAmount);
+			}
+
 			componentBitsets.resize(std::max(componentBitsets.size(), static_cast<size_t>(entityAmount)));
 			entityVersions.resize(std::max(entityVersions.size(), static_cast<size_t>(entityAmount)));
 			assert(componentBitsets.size() == entityVersions.size());
-			// If the entity existed before, we increase version to break old handle.
+			// If the entity existed before, we increase version to break old handles.
 			EntityId::Version_t versionIndex = ++entityVersions[entityAmount - 1];
 
 			return EntityId{ entityAmount - 1, versionIndex };
@@ -121,6 +107,7 @@ namespace eyos
 			//Only swap if we are not the last entity
 			auto [arrayIndex, valid] = GetIndexInArray(id);
 			//TODO: Double check that entityAmount is not off-by-one
+			//TODO: Why am I even comparing to entityAmount here??
 			if (valid && arrayIndex < entityAmount) {
 				if constexpr (EcsTrackableEnabled) {
 					if (componentBitsets[entityAmount] & EcsTrackableMask) {
@@ -129,10 +116,15 @@ namespace eyos
 					}
 				}
 
-				static_for<0, sizeof...(TCmps)>([&](auto i) constexpr {
-					auto& componentArray = std::get<i.value>(componentTuple);
-					std::swap(componentArray[id.index], componentArray[entityAmount]);
-					});
+				//static_for<0, sizeof...(TCmps)>([&](auto i) constexpr {
+				//	auto& componentArray = std::get<i.value>(componentTuple);
+				//	std::swap(componentArray[id.index], componentArray[entityAmount]);
+				//	});
+				for (uint32_t i = 0; i < componentArrayAmount; ++i) {
+					auto& componentArray = componentArrays[i];
+					componentArray.SwapToEnd(id.index);
+				}
+				
 				std::swap(componentBitsets[id.index], componentBitsets[entityAmount]);
 				++entityVersions[id.index];
 			}
@@ -260,7 +252,7 @@ namespace eyos
 		[[nodiscard]] std::vector<EntityId> QueryEntities()
 		{
 			std::vector<EntityId> entities;
-			//TODO: this is quite aggressive, but most performant. And .shrink_to_fit() can be called by the user later.
+			//TODO: Reconsider this. its quite aggressive, but most performant. And .shrink_to_fit() can be called by the user later.
 			entities.reserve(entityAmount);
 
 			constexpr ComponentBitset_t componentMask = CreateBitsetFromTypes<Ts...>();
@@ -304,20 +296,46 @@ namespace eyos
 		}
 
 		template<typename... Ts>
-		static constexpr ComponentBitset_t CreateBitsetFromTypes()
+		ComponentBitset_t CreateBitsetFromTypes()
 		{
-			ComponentBitset_t bits = (GetBitInBitsetFromType<Ts>() | ...);
-
-			return bits;
+			return (GetBitInBitsetFromType<Ts>() | ...);
 		}
 
 		template<typename T>
-		static constexpr ComponentBitset_t GetBitInBitsetFromType()
+		ComponentBitset_t GetBitInBitsetFromType()
 		{
-			constexpr int index = get_index_in_pack<T, TCmps...>;
-			static_assert(index != -1, "Cannot find type T in TCmps!");
+			auto index = componentTypeToIndex.at(GetTemplateTypeId<T>());
+			return 1 << index;
+		}
+		
+		template<typename T>
+		void RegisterSingleType()
+		{
+			assert(componentArrayAmount + flagTypesAmount < MaxComponentTypes && "The maximum amount of component types has been exceeded");
+			if (componentArrayAmount + flagTypesAmount >= MaxComponentTypes) {
+				return;
+			}
+			
+			if constexpr (std::is_empty_v<T>)
+			{
+				auto currentIndex = flagTypesAmount++;
+				// flags are stored from the end of the bitmask, so that the index for data components aligns in the componentArray
+				componentTypeToIndex[GetTemplateTypeId<T>()] = LastComponentIndex - currentIndex;
+			}
+			else
+			{
+				auto currentChunk = componentArrayAmount++;
 
-			return (1 << index);
+				componentArrays[currentChunk] = ComponentArray::CreateFromType<T>();
+				assert(componentTypeToIndex.find(GetTemplateTypeId<T>()) == componentTypeToIndex.end()
+					&& "Component array of type T is already created before!");
+				componentTypeToIndex[GetTemplateTypeId<T>()] = currentChunk;
+			}
 		}
 	};
+
+	//! Default implementation of the ECS, has entity tracking enabled. Because it is useful 90% of the time
+	using Ecs = ConfigurableEcs<true>;
+	//! For the 10% of the time when persistent entity tracking is not required. Some branches can be avoided
+	using EcsWithoutTracking = ConfigurableEcs<true>;
 }
