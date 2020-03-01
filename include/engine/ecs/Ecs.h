@@ -188,7 +188,7 @@ namespace eyos
 				if (it != componentTypeToIndex.end()) {
 					uint8_t cmpIndex = it->second;
 
-					auto& cmpArray = componentArrays[cmpIndex];
+					ComponentArray& cmpArray = componentArrays[cmpIndex];
 					cmpArray.at<T>(arrayIndex) = std::forward<T>(cmp);
 				}
 			}
@@ -225,7 +225,7 @@ namespace eyos
 				if (it != componentTypeToIndex.end()) {
 					uint8_t cmpIndex = *it;
 
-					auto& cmpArray = componentArrays[cmpIndex];
+					ComponentArray& cmpArray = componentArrays[cmpIndex];
 					cmpArray.at<T>(arrayIndex) = T{};
 				}
 #endif
@@ -251,7 +251,7 @@ namespace eyos
 				auto [arrayIndex, valid] = GetIndexInArray(id);
 				assert(valid);
 
-				auto& cmpArray = componentArrays[cmpIndex];
+				ComponentArray& cmpArray = componentArrays[cmpIndex];
 				return cmpArray.at<T>(arrayIndex);
 			}
 			// TODO: Make a proper macro for this, named something like `UNREACHABLE()` like in rust
