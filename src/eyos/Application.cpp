@@ -48,6 +48,7 @@ void eyos::Application::Init(int _argc, char** _argv)
 	entry::setWindowSize(windowHandle, width, height);
 	input.Init(width, height);
 	g_inputManager = &input.inputManager;
+	RegisterClientEcsTypes(world.ecs);
 	//entry::SetNativeMessageCallback(&ProcessMessage); FIXME: why does this not work under Linux?
 }
 
@@ -82,7 +83,7 @@ void eyos::Application::Update()
 	// DEBUG STUFF:
 	Mesh* bunnyMesh = meshLoad(/*"meshes/Swordsman2.bin"*/ "meshes/Knight.bin");
 	Material testMaterial{};
-	FillEcs(world.esc, bunnyMesh, testMaterial);
+	FillEcs(world.ecs, bunnyMesh, testMaterial);
 	auto terrain{ std::move((GenTerrain("../data/maps/"))) };
 
 	world.time.Initialize(0.0333,6);
@@ -120,7 +121,7 @@ void eyos::Application::Update()
 		}
 
 		renderer.BeginRender(camera);
-		renderer.RenderWorld(world.esc, camera);
+		renderer.RenderWorld(world.ecs, camera);
 		terrain.generatedMesh->submit(0, renderer.GetMeshShaderProgram(), glm::value_ptr(glm::mat4{ 1.0f }), BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP);
 		renderer.EndRender();
 		imguiEndFrame();

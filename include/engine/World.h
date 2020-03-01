@@ -5,7 +5,7 @@
 #include <engine/Time.h>
 namespace eyos {
 	struct World {
-		Ecs esc;
+		Ecs ecs;
 		ResourceManager resourceManager;
 		EngineEvents engineEvents;
 		Time time;
