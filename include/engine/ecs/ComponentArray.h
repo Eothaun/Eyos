@@ -2,18 +2,18 @@
 #include <cstdint>
 #include <memory>
 #include <cstdlib>
+#include <algorithm>
 
 #include "MTP_Utils.h"
 
 
 namespace eyos 
 {
-	template<typename T>
-	struct AlignedDeleter
+	struct AlignedFree
 	{
-		void operator()(T* t)
+		void operator()(void* ptr)
 		{
-			_aligned_free(t);
+			_aligned_free(ptr);
 		}
 	};
 	
@@ -28,8 +28,7 @@ namespace eyos
 		using ErasedSwap = void(*)(void* a, void* b);
 
 	private:
-		//TODO: Make sure we allocate from and with the correct alignment
-		std::unique_ptr<std::byte[], AlignedDeleter<std::byte[]>> data{};
+		std::unique_ptr<std::byte[], AlignedFree> data{};
 		uint32_t elementCount = 0;
 		uint32_t elementCapacity = 0;
 		
@@ -67,45 +66,55 @@ namespace eyos
 			return elementCapacity;
 		}
 
+		void reserve_erased(uint32_t newCapacity) {
+			if (capacity() < newCapacity) {
+				ReallocErased(size(), newCapacity);
+			}
+		}
+
+		template<typename T>
+		void reserve(uint32_t newCapacity)
+		{
+			if (capacity() < newCapacity) {
+				Realloc<T>(size(), newCapacity);
+			}
+		}
+
 		//! \NOTE newSize is in amount of elements. NOT in amount of bytes
 		void resize_erased(uint32_t newSize)
 		{
 			if (capacity() < newSize)
 			{
-				std::byte* biggerArr = static_cast<std::byte*>( _aligned_malloc(newSize * componentSize, alignment) );
-				if(isTrivial)
-				{
-					memcpy(biggerArr, data.get(), size() * componentSize);
-				}
-				else
-				{
-					for (uint32_t i = 0; i < size(); ++i)
-					{
-						componentMoveAssign(&biggerArr[i*componentSize], at_erased(i));
-					}
-				}
-				data.reset(biggerArr);
+				ReallocErased(newSize, newSize);
 			}
-
-			elementCount = newSize;
+			else 
+			{
+				elementCount = newSize;
+			}
 		}
 
 		//! Overload of resize which takes the type, which means the compiler can inline the move constructor
 		template<typename T>
 		void resize(uint32_t newSize)
 		{
-			// Ahm this looks like UB waiting to happen. But lets see if it works
-			std::vector<T>& elementVec = reinterpret_cast<std::vector<T>&>(data);
-
-			elementVec.resize(newSize);
+			if (capacity() < newSize)
+			{
+				Realloc<T>(newSize, newSize);
+			}
+			else
+			{
+				elementCount = newSize;
+			}
 		}
 
+		//! Type erased 'get element at index' function
 		void* at_erased(uint32_t index)
 		{
 			size_t byteIndex = static_cast<size_t>(index) * componentSize;
 			return &data[byteIndex];
 		}
 
+		//! 'get element at index' function
 		template<typename T>
 		T & at(uint32_t index)
 		{
@@ -141,6 +150,9 @@ namespace eyos
 
 	private:
 		void Destroy();
+		void ReallocErased(uint32_t newSize, uint32_t newCapacity);
+		template<typename T>
+		void Realloc(uint32_t newSize, uint32_t newCapacity);
 	};
 
 	inline ComponentArray::~ComponentArray()
@@ -151,6 +163,7 @@ namespace eyos
 
 	inline ComponentArray::ComponentArray(ComponentArray&& other) noexcept // NOLINT(bugprone-exception-escape)
 	{
+		//TODO: Future optimization, Realloc here instead of Destroying and reallocating. In case of non-trivial class
 		Destroy();
 
 		elementCount = other.elementCount;
@@ -183,8 +196,11 @@ namespace eyos
 		if (this == &other)
 			return *this;
 
+		//TODO: Future optimization, Realloc here instead of Destroying and reallocating. In case of non-trivial class
 		Destroy();
-		
+
+		elementCount = other.elementCount;
+		elementCapacity = other.elementCapacity;
 		typeId = other.typeId;
 		alignment = other.alignment;
 		componentSize = other.componentSize;
@@ -219,6 +235,57 @@ namespace eyos
 			}
 		}
 		data.reset();
+		elementCapacity = 0;
+		elementCount = 0;
+	}
+
+	inline void ComponentArray::ReallocErased(uint32_t newSize, uint32_t newCapacity)
+	{
+		if (isTrivial)
+		{
+			std::byte* biggerArr = static_cast<std::byte*>( _aligned_realloc(data.release(), newSize * componentSize, alignment) );
+			//Previously the owned pointer has been `release()` so the unique_ptr won't free a second time
+			data.reset(biggerArr);
+		}
+		else
+		{
+			std::byte* biggerArr = static_cast<std::byte*>(_aligned_malloc(newSize * componentSize, alignment));
+			for (uint32_t i = 0; i < size(); ++i)
+			{
+				componentMoveAssign(&biggerArr[i * componentSize], at_erased(i));
+			}
+			data.reset(biggerArr);
+		}
+
+		elementCount = newSize;
+		elementCapacity = newCapacity;
+	}
+
+	template <typename T>
+	void ComponentArray::Realloc(uint32_t newSize, uint32_t newCapacity)
+	{
+		assert(newSize <= newCapacity);
+		// sanity check
+		assert(sizeof(T) == componentSize);
+		
+		T* biggerArr;
+		if constexpr(std::is_trivial_v<T>)
+		{
+			biggerArr = _aligned_realloc(data.get(), newCapacity * sizeof(T), alignof(T));
+		}
+		else
+		{
+			biggerArr = static_cast<T*>(_aligned_malloc(newCapacity * sizeof(T), alignof(T)));
+			T* oldArr = static_cast<T*>(data.get());
+			for (uint32_t i = 0; i < newSize; ++i)
+			{
+				biggerArr[i] = std::move(oldArr[i]);
+			}
+		}
+		data.reset(biggerArr);
+
+		elementCount = newSize;
+		elementCapacity = newCapacity;
 	}
 
 

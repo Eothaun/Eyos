@@ -129,9 +129,13 @@ namespace eyos
 				++entityVersions[id.index];
 			}
 
-			static_for<0, sizeof...(TCmps)>([&](auto i) constexpr {
-				std::get<i.value>(componentTuple).resize(entityAmount);
-				});
+			//static_for<0, sizeof...(TCmps)>([&](auto i) constexpr {
+			//	std::get<i.value>(componentTuple).resize(entityAmount);
+			//	});
+			for (uint32_t i = 0; i < componentArrays; ++i)
+			{
+				componentArrays[i].resize_erased(entityAmount);
+			}
 
 			// TODO: At the moment this causes a bug, see if we can resize them safely with another technique
 			//if constexpr (EcsTrackableEnabled) {
@@ -180,11 +184,13 @@ namespace eyos
 			}
 
 			if constexpr (!std::is_empty_v<std::decay_t<T>>) {
-				static constexpr int cmpIndex = get_index_in_pack<std::decay_t<T>, TCmps...>;
-				static_assert(cmpIndex != -1, "Cannot find component T in typelist for Ecs");
+				auto it = componentTypeToIndex.find(GetTemplateTypeId<T>());
+				if (it != componentTypeToIndex.end()) {
+					uint8_t cmpIndex = it->second;
 
-				auto& cmpArray = std::get<cmpIndex>(componentTuple);
-				cmpArray[arrayIndex] = std::forward<T>(cmp);
+					auto& cmpArray = componentArrays[cmpIndex];
+					cmpArray.at<T>(arrayIndex) = std::forward<T>(cmp);
+				}
 			}
 
 			componentBitsets[arrayIndex] |= CreateBitsetFromTypes<T>();
@@ -215,11 +221,13 @@ namespace eyos
 			if constexpr (!std::is_empty_v<std::decay_t<T>>) {
 				//TODO: Do we want this to happen in release too?
 #ifdef _DEBUG
-				static constexpr int cmpIndex = get_index_in_pack<std::decay_t<T>, TCmps...>;
-				static_assert(cmpIndex != -1, "Cannot find component T in typelist for Ecs");
+				auto it = componentTypeToIndex.find(GetTemplateTypeId<T>());
+				if (it != componentTypeToIndex.end()) {
+					uint8_t cmpIndex = *it;
 
-				auto& cmpArray = std::get<cmpIndex>(componentTuple);
-				cmpArray[arrayIndex] = T{};
+					auto& cmpArray = componentArrays[cmpIndex];
+					cmpArray.at<T>(arrayIndex) = T{};
+				}
 #endif
 			}
 
@@ -236,14 +244,19 @@ namespace eyos
 		template<typename T>
 		[[nodiscard]] T& Get(EntityId id)
 		{
-			static constexpr int cmpIndex = get_index_in_pack<T, TCmps...>;
-			static_assert(cmpIndex != -1, "Cannot find component T in typelist for Ecs");
+			auto it = componentTypeToIndex.find(GetTemplateTypeId<T>());
+			if (it != componentTypeToIndex.end()) {
+				uint8_t cmpIndex = it->second;
 
-			auto [arrayIndex, valid] = GetIndexInArray(id);
-			assert(valid);
+				auto [arrayIndex, valid] = GetIndexInArray(id);
+				assert(valid);
 
-			auto& cmpArray = std::get<cmpIndex>(componentTuple);
-			return cmpArray[arrayIndex];
+				auto& cmpArray = componentArrays[cmpIndex];
+				return cmpArray.at<T>(arrayIndex);
+			}
+			// TODO: Make a proper macro for this, named something like `UNREACHABLE()` like in rust
+			assert(false);
+			std::abort();
 		}
 
 		//TODO: Make a overload which takes a buffer instead of allocating all the time
@@ -255,7 +268,7 @@ namespace eyos
 			//TODO: Reconsider this. its quite aggressive, but most performant. And .shrink_to_fit() can be called by the user later.
 			entities.reserve(entityAmount);
 
-			constexpr ComponentBitset_t componentMask = CreateBitsetFromTypes<Ts...>();
+			ComponentBitset_t componentMask = CreateBitsetFromTypes<Ts...>();
 			for (EntityId::Index_t i = 0; i < entityAmount; ++i) {
 				if ((componentBitsets[i] & componentMask) == componentMask) {
 					entities.push_back(EntityId{ i, entityVersions[i] });
