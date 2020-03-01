@@ -132,7 +132,7 @@ namespace eyos
 			//static_for<0, sizeof...(TCmps)>([&](auto i) constexpr {
 			//	std::get<i.value>(componentTuple).resize(entityAmount);
 			//	});
-			for (uint32_t i = 0; i < componentArrays; ++i)
+			for (uint32_t i = 0; i < componentArrayAmount; ++i)
 			{
 				componentArrays[i].resize_erased(entityAmount);
 			}
