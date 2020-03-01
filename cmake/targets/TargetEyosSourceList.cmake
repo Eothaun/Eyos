@@ -13,4 +13,5 @@ target_sources_local(Eyos
     # others
     eyos/Application.cpp
     eyos/Input.cpp
+    eyos/ClientEcsType.cpp
 )

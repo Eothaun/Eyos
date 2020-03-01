@@ -4,21 +4,23 @@
 #include <cstdlib>
 #include <algorithm>
 
+
+#include "engine/AlignedAlloc.h"
 #include "MTP_Utils.h"
 
 
 namespace eyos 
 {
-	struct AlignedFree
+	struct AlignedFreeFunctor
 	{
 		void operator()(void* ptr)
 		{
-			_aligned_free(ptr);
+			eyos::AlignedFree(ptr);
 		}
 	};
 	
 	//! A type erased component array
-	//! Funnily enough this struct feels a lot like a memory allocator
+	//! Funnily enough this class feels a lot like a memory allocator
 	class ComponentArray
 	{
 	public:
@@ -28,7 +30,7 @@ namespace eyos
 		using ErasedSwap = void(*)(void* a, void* b);
 
 	private:
-		std::unique_ptr<std::byte[], AlignedFree> data{};
+		std::unique_ptr<std::byte[], AlignedFreeFunctor> data{};
 		uint32_t elementCount = 0;
 		uint32_t elementCapacity = 0;
 		
@@ -183,7 +185,7 @@ namespace eyos
 		}
 		else
 		{
-			data.reset(static_cast<std::byte*>( _aligned_malloc(elementCount * componentSize, alignment) ));
+			data.reset(static_cast<std::byte*>( eyos::AlignedMalloc(elementCount * componentSize, alignment) ));
 			for(uint32_t i = 0; i < size(); ++i)
 			{
 				componentMoveAssign(at_erased(i), other.at_erased(i));
@@ -216,7 +218,7 @@ namespace eyos
 		}
 		else
 		{
-			data.reset(static_cast<std::byte*>( _aligned_malloc(elementCount * componentSize, alignment) ));
+			data.reset(static_cast<std::byte*>( eyos::AlignedMalloc(elementCount * componentSize, alignment) ));
 			for(uint32_t i = 0; i < size(); ++i)
 			{
 				componentMoveAssign(at_erased(i), other.at_erased(i));
@@ -243,13 +245,13 @@ namespace eyos
 	{
 		if (isTrivial)
 		{
-			std::byte* biggerArr = static_cast<std::byte*>( _aligned_realloc(data.release(), newSize * componentSize, alignment) );
+			std::byte* biggerArr = static_cast<std::byte*>( eyos::AlignedRealloc(data.release(), newSize * componentSize, alignment) );
 			//Previously the owned pointer has been `release()` so the unique_ptr won't free a second time
 			data.reset(biggerArr);
 		}
 		else
 		{
-			std::byte* biggerArr = static_cast<std::byte*>(_aligned_malloc(newSize * componentSize, alignment));
+			std::byte* biggerArr = static_cast<std::byte*>(eyos::AlignedMalloc(newSize * componentSize, alignment));
 			for (uint32_t i = 0; i < size(); ++i)
 			{
 				componentMoveAssign(&biggerArr[i * componentSize], at_erased(i));
@@ -271,11 +273,11 @@ namespace eyos
 		T* biggerArr;
 		if constexpr(std::is_trivial_v<T>)
 		{
-			biggerArr = _aligned_realloc(data.get(), newCapacity * sizeof(T), alignof(T));
+			biggerArr = eyos::AlignedRealloc(data.get(), newCapacity * sizeof(T), alignof(T));
 		}
 		else
 		{
-			biggerArr = static_cast<T*>(_aligned_malloc(newCapacity * sizeof(T), alignof(T)));
+			biggerArr = static_cast<T*>(eyos::AlignedMalloc(newCapacity * sizeof(T), alignof(T)));
 			T* oldArr = static_cast<T*>(data.get());
 			for (uint32_t i = 0; i < newSize; ++i)
 			{

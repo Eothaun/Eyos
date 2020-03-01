@@ -55,7 +55,7 @@ void eyos::Application::Init(int _argc, char** _argv)
 static void DrawPerformanceGraphInImgui();
 static bool Bar(float _width, float _maxWidth, float _height, const ImVec4& _color);
 namespace cmps = eyos::rendering_components;
-void FillEcs(eyos::EyosEcs& ecs, Mesh* mesh, eyos::Material mat);
+void FillEcs(eyos::Ecs& ecs, Mesh* mesh, eyos::Material mat);
 eyos::RenderableTerrain GenTerrain(std::string path);
 void InputTests(const eyos::Input& input);
 void ImguiInput(const eyos::Input& input, const entry::MouseState& mouseState);
@@ -481,7 +481,7 @@ void ImguiInput(const eyos::Input& input,const entry::MouseState& mouseState) {
 }
 
 ////////////// ESC TEST STUFF /////////////////
-void FillEcs(eyos::EyosEcs& ecs,Mesh* mesh, eyos::Material mat)
+void FillEcs(eyos::Ecs& ecs,Mesh* mesh, eyos::Material mat)
 {
 	{
 		eyos::EntityId model = ecs.CreateEntity();

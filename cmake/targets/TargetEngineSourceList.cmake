@@ -2,6 +2,7 @@ target_sources_local(Engine
     PRIVATE
     engine/Eyos.cpp
     engine/ecs/EntityId.cpp
+    engine/ecs/MTP_Utils.cpp
     engine/Terrain.cpp
     engine/Time.cpp
     engine/net/Address.cpp
@@ -17,5 +18,4 @@ target_sources_local(Engine
     engine/gen/PerlinNoise.cpp
     engine/gen/Image.cpp
     engine/gen/MapGeneration.cpp
-    engine/ecs/MTP_Utils.cpp
 )

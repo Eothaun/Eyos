@@ -15,7 +15,7 @@ namespace eyos {
 		void Update();
 		void Shutdown();
 	private:
-		World<EyosEcs> world {};
+		World world {};
 		Renderer renderer {};
 		entry::WindowHandle windowHandle {0};
 		Input input {};
