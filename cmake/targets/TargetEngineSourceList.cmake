@@ -17,5 +17,7 @@ target_sources_local(Engine
     engine/gen/PerlinNoise.cpp
     engine/gen/Image.cpp
     engine/gen/MapGeneration.cpp
+    engine/gen/FlowField.cpp
     engine/ecs/MTP_Utils.cpp
+    engine/nav/TerrainNav.cpp
 )
