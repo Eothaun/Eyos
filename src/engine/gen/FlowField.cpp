@@ -130,10 +130,10 @@ void FlowField::GenerateDijkstraGrid(std::vector<glm::vec2> obstacles)
 std::vector<node> FlowField::NeighboursOf(node& neighbour)
 {
 	std::vector<node> neighbours;
-	if (neighbour.pos.x != gridWidth-1) neighbours.push_back(dijkstraGrid[(__int64)neighbour.pos.x + 1][neighbour.pos.y]);
-	if (neighbour.pos.x != 0) neighbours.push_back(dijkstraGrid[(__int64)neighbour.pos.x - 1][neighbour.pos.y]);
-	if (neighbour.pos.y != gridHeight-1) neighbours.push_back(dijkstraGrid[neighbour.pos.x][(__int64)neighbour.pos.y + 1]);
-	if (neighbour.pos.y != 0)neighbours.push_back(dijkstraGrid[neighbour.pos.x][(__int64)neighbour.pos.y - 1]);
+	if (neighbour.pos.x != gridWidth-1) neighbours.push_back(dijkstraGrid[(int)neighbour.pos.x + 1][neighbour.pos.y]);
+	if (neighbour.pos.x != 0) neighbours.push_back(dijkstraGrid[(int)neighbour.pos.x - 1][neighbour.pos.y]);
+	if (neighbour.pos.y != gridHeight-1) neighbours.push_back(dijkstraGrid[neighbour.pos.x][(int)neighbour.pos.y + 1]);
+	if (neighbour.pos.y != 0)neighbours.push_back(dijkstraGrid[neighbour.pos.x][(int)neighbour.pos.y - 1]);
 	return neighbours;
 }
 
@@ -141,14 +141,14 @@ std::vector<node> FlowField::NeighboursOf(node& neighbour)
 std::vector<node> FlowField::AllNeighboursOf(node& neighbour)
 {
 	std::vector<node> neighbours;
-	if (neighbour.pos.x != gridWidth -1) neighbours.push_back(dijkstraGrid[(__int64)neighbour.pos.x + 1][neighbour.pos.y]);
-	if(neighbour.pos.x != 0) neighbours.push_back(dijkstraGrid[(__int64)neighbour.pos.x - 1][neighbour.pos.y]);
-	if (neighbour.pos.y != gridHeight -1) neighbours.push_back(dijkstraGrid[neighbour.pos.x][(__int64)neighbour.pos.y + 1]);
-	if(neighbour.pos.y != 0 )neighbours.push_back(dijkstraGrid[neighbour.pos.x][(__int64)neighbour.pos.y - 1]);
+	if (neighbour.pos.x != gridWidth -1) neighbours.push_back(dijkstraGrid[(int)neighbour.pos.x + 1][neighbour.pos.y]);
+	if(neighbour.pos.x != 0) neighbours.push_back(dijkstraGrid[(int)neighbour.pos.x - 1][neighbour.pos.y]);
+	if (neighbour.pos.y != gridHeight -1) neighbours.push_back(dijkstraGrid[neighbour.pos.x][(int)neighbour.pos.y + 1]);
+	if(neighbour.pos.y != 0 )neighbours.push_back(dijkstraGrid[neighbour.pos.x][(int)neighbour.pos.y - 1]);
 
-	if (neighbour.pos.x != gridWidth - 1 && neighbour.pos.y != gridHeight -1) neighbours.push_back(dijkstraGrid[(__int64)neighbour.pos.x + 1][(__int64)neighbour.pos.y + 1]);
-	if (neighbour.pos.x != 0 && neighbour.pos.y != 0) neighbours.push_back(dijkstraGrid[(__int64)neighbour.pos.x - 1][(__int64)neighbour.pos.y - 1]);
-	if (neighbour.pos.y != gridHeight - 1 && neighbour.pos.x != 0) neighbours.push_back(dijkstraGrid[(__int64)neighbour.pos.x - 1][(__int64)neighbour.pos.y + 1]);
-	if (neighbour.pos.y != 0 && neighbour.pos.x != gridWidth - 1)neighbours.push_back(dijkstraGrid[(__int64)neighbour.pos.x + 1][(__int64)neighbour.pos.y - 1]);
+	if (neighbour.pos.x != gridWidth - 1 && neighbour.pos.y != gridHeight -1) neighbours.push_back(dijkstraGrid[(int)neighbour.pos.x + 1][(int)neighbour.pos.y + 1]);
+	if (neighbour.pos.x != 0 && neighbour.pos.y != 0) neighbours.push_back(dijkstraGrid[(int)neighbour.pos.x - 1][(int)neighbour.pos.y - 1]);
+	if (neighbour.pos.y != gridHeight - 1 && neighbour.pos.x != 0) neighbours.push_back(dijkstraGrid[(int)neighbour.pos.x - 1][(int)neighbour.pos.y + 1]);
+	if (neighbour.pos.y != 0 && neighbour.pos.x != gridWidth - 1)neighbours.push_back(dijkstraGrid[(int)neighbour.pos.x + 1][(int)neighbour.pos.y - 1]);
 	return neighbours;
 }
