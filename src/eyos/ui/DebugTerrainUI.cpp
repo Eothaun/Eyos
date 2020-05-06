@@ -1,3 +1,5 @@
+#pragma once
+#include "eyos/Config.h"
 #include "eyos/ui/DebugTerrainUI.h"
 #include "engine/gen/MapGeneration.h"
 #include <imgui/imgui.h>
@@ -5,11 +7,11 @@
 
 namespace eyos::gen
 {
-	float frequency = 2.0f;
-	int imageSize = 512;
-	int octaves = 2;
-	int seed = 2;
-
+	float frequency{ setting::terrain::frequency };
+	int imageSize{setting::terrain::imageSize};
+	int octaves{setting::terrain::octaves};
+	int seed{setting::terrain::seed};
+	char path_str[128]{};
 	void DrawTerrainToolImgui(std::string& path)
 	{
 		ImGui::SetNextWindowSize(
@@ -24,13 +26,14 @@ namespace eyos::gen
 		ImGui::Begin("DebugTerrainTool ImGUI");
 		
 		
-		static char str[128] = "../data/maps/";
+		
+		memcpy(path_str,path.data(),path.size());
 		ImGui::InputFloat("frequency", &frequency, 0.0f, 10.0f);
 		ImGui::InputInt("imageSize", &imageSize, 1, 2000);
 		ImGui::InputInt("octaves", &octaves, 1, 10);
 		ImGui::InputInt("seed", &seed, 0, 10000);
-		//ImGui::InputText("path", str, IM_ARRAYSIZE(str));
-		path = str;
+		ImGui::InputText("path", path_str, IM_ARRAYSIZE(path_str));
+		path = path_str;
 		if (ImGui::Button("Generate"))
 		{
 			path = MapGeneration::GenHeightMap(path,imageSize,frequency,octaves,seed);

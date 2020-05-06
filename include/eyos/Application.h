@@ -1,6 +1,6 @@
 #pragma once
+#include "eyos/Config.h"
 #include "engine/World.h"
-
 #include "eyos/ClientEcsType.h"
 #include "eyos/GameEvents.h"
 #include "eyos/rendering/EyosRenderer.h"
@@ -20,7 +20,7 @@ namespace eyos {
 		entry::WindowHandle windowHandle {0};
 		Input input {};
 	public:
-		std::uint32_t width { 1280 };
-		std::uint32_t height { 720 };
+		std::uint32_t width { setting::window::width };
+		std::uint32_t height { setting::window::height };
 	};
 }

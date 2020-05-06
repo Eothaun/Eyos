@@ -1,3 +1,4 @@
+#include "eyos/Config.h"
 #include "eyos/Application.h"
 #include "eyos/rendering/Camera.h"
 
@@ -27,15 +28,16 @@
 */
 static gainput::InputManager* g_inputManager{ nullptr };
 
-
-void imguiNewFrame(const entry::MouseState& mouseState, uint16_t width, uint16_t height);
-
 template<typename T>
 static bool ProcessMessage(T& msg)
 {
 	g_inputManager->HandleMessage(msg);
 	return false;
 }
+
+void imguiNewFrame(const eyos::Input& input, const entry::MouseState& mouseState, uint16_t width, uint16_t height);
+
+eyos::RenderableTerrain GenTerrain(std::string path);
 
 void eyos::Application::Init(int _argc, char** _argv)
 {
@@ -57,11 +59,16 @@ void eyos::Application::Gameloop()
 	Camera camera{};
 	camera.position = { 0, 12, 35 };
 	camera.rotation = glm::quat{ glm::vec3{0.0, 0.0, 0.0} };
+	camera.farZ = setting::camera::farZ;
+	camera.fov = setting::camera::fov;
+	camera.nearZ = setting::camera::nearZ;
 	entry::MouseState mouseState{};
 	auto& inputManager = input.inputManager;
 	auto& keyboard = input.keyboard;
 	auto& mouse = input.mouse;
 	world.time.Initialize(0.0333,6);
+	std::string path{ setting::terrain::path };
+	auto terrain{ std::move((GenTerrain("../data/maps/"))) };
 	while (true)
 	{
 		inputManager.Update();
@@ -70,10 +77,16 @@ void eyos::Application::Gameloop()
 		{
 			break;
 		}
-		imguiNewFrame(mouseState, width, height);
+		imguiNewFrame(input,mouseState, width, height);
+		gen::DrawTerrainToolImgui(path);
+		if (path != "")
+		{
+			terrain = std::move(GenTerrain(path));
+		}
 		camera.DoMovement(.5f, 0.01f, mouseState);
 		renderer.BeginRender(camera);
 		renderer.RenderWorld(world.esc, camera);
+		terrain.generatedMesh->submit(0, renderer.GetMeshShaderProgram(), glm::value_ptr(glm::mat4{ 1.0f }), BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP);
 		renderer.EndRender();
 		imguiEndFrame();
 		world.time.Update();
@@ -86,7 +99,23 @@ void eyos::Application::Shutdown()
 }
 
 
-void imguiNewFrame(const entry::MouseState& mouseState, uint16_t width, uint16_t height) {
+eyos::RenderableTerrain GenTerrain(std::string path)
+{
+	if (path == "../data/maps/" || path == "")
+	{
+		path = eyos::gen::MapGeneration::GenHeightMap(path);
+	}
+	if (path != "")
+	{
+		bimg::ImageContainer* heightmap{ imageLoad(path.c_str(), bgfx::TextureFormat::R8) }; // <--Memory Leak?
+		eyos::RenderableTerrain terrain{ static_cast<char*>(heightmap->m_data), heightmap->m_width, heightmap->m_height };
+		terrain.GenerateMesh();
+		return terrain;
+	}
+}
+
+
+void imguiNewFrame(const eyos::Input& input,const entry::MouseState& mouseState, uint16_t width, uint16_t height) {
 	imguiBeginFrame(mouseState.m_mx
 		, mouseState.m_my
 		, (mouseState.m_buttons[entry::MouseButton::Left] ? IMGUI_MBUT_LEFT : 0)
@@ -96,4 +125,27 @@ void imguiNewFrame(const entry::MouseState& mouseState, uint16_t width, uint16_t
 		, width
 		, height
 	);
+	{
+		const auto& mouse{ input.mouse };
+		const auto& keyboard{ input.keyboard };
+		auto& io{ ImGui::GetIO() };
+
+		std::fill_n(io.KeysDown, 512, false);
+
+		io.KeyShift = keyboard->GetBool(gainput::KeyShiftL) | keyboard->GetBool(gainput::KeyShiftR);
+		io.KeyCtrl = keyboard->GetBool(gainput::KeyCtrlL) | keyboard->GetBool(gainput::KeyCtrlR);
+		io.KeyAlt = keyboard->GetBool(gainput::KeyAltL) | keyboard->GetBool(gainput::KeyAltR);
+
+		std::array<gainput::DeviceButtonSpec, 16> buttons{};
+		auto buttonAmount{ keyboard->GetAnyButtonDown(buttons.data(), buttons.size()) };
+		for (size_t i{ 0 }; i < buttonAmount; ++i) {
+			io.KeysDown[buttons[i].buttonId] = true;
+		}
+
+		char c = keyboard->GetNextCharacter();
+		while (c != 0) {
+			io.AddInputCharacter(c);
+			c = keyboard->GetNextCharacter();
+		}
+	}
 }

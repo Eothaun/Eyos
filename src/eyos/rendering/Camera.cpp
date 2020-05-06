@@ -3,8 +3,9 @@
 #include "bgfx_utils.h"
 #include "entry/input.h"
 #include <glm/gtx/string_cast.hpp>
-#include <iostream>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <iostream>
 #include <cmath>
 
 
@@ -16,7 +17,7 @@ namespace eyos {
 		if (freeMovement == false)
 		{
 			position = startPosPlayCam;
-			rotation = glm::quat(startRotPlayCam);
+			rotation = glm::quat{ startRotPlayCam };
 		}
 	}
 	void Camera::DoMovement(float movementSpeed, float rotationSpeed, const entry::MouseState& mouseState)
