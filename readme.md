@@ -56,7 +56,7 @@ Please download the [Clang Format VS Extension](https://marketplace.visualstudio
 
 ## Dependencies
 
-- [ENet](https://github.com/lsalzman/enet)
+- ~[ENet](https://github.com/lsalzman/enet)~*
 - [glm](https://github.com/g-truc/glm)
 - [bgfx](https://github.com/bkaradzic/bgfx)
 - [Catch2](https://github.com/catchorg/Catch2)
@@ -75,7 +75,7 @@ Please download the [Clang Format VS Extension](https://marketplace.visualstudio
 
 - [Maiko Steeman](https://maikosteeman.dev/) Production, Engine Core Architecture & Graphics Programming
 - [Marjolein Kaal](http://www.marjoleinkaal.com/) AI,Level Generation & Gameplay Systems
-- [Simon Renger](https://simonrenger.com/) Network Architecture*, Engine Architecture & QA Engineer 
+- [Simon Renger](https://simonrenger.com/) ~Network Architecture~*, Engine Architecture & QA Engineer 
 - [Hannes Vernooij](https://www.hannesvernooij.com/) Gameplay Systems & Graphics Programming
 
 Supervisor and special thanks go to [Bojan Endrovski](https://www.linkedin.com/in/bojanendrovski/)
