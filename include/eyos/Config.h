@@ -16,9 +16,15 @@ namespace eyos::setting {
 		constexpr unsigned int height{ 720 };
 	}
 
+	namespace time {
+		constexpr double maxTimeStep{ 0.0333 };
+		constexpr double maxSteps{ 6};
+
+	}
+
 	namespace camera {
-		constexpr float fov = 45.f;
-		constexpr float nearZ = 0.5f;
-		constexpr float farZ = 1500.f;
+		constexpr float fov{ 45.f };
+		constexpr float nearZ { 0.5f};
+		constexpr float farZ{ 500.f };
 	}
 }

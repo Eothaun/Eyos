@@ -66,9 +66,9 @@ void eyos::Application::Gameloop()
 	auto& inputManager = input.inputManager;
 	auto& keyboard = input.keyboard;
 	auto& mouse = input.mouse;
-	world.time.Initialize(0.0333,6);
+	world.time.Initialize(setting::time::maxTimeStep, setting::time::maxSteps);
 	std::string path{ setting::terrain::path };
-	auto terrain{ std::move((GenTerrain("../data/maps/"))) };
+	auto terrain{ std::move((GenTerrain(path))) };
 	while (true)
 	{
 		inputManager.Update();
