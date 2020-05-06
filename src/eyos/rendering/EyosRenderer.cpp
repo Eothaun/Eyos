@@ -161,16 +161,9 @@ namespace eyos {
 		RenderModels(ecs);
 		RenderInstancedModels(ecs);
 
-		uiRenderer->Render();
+		//uiRenderer->Render(); REMOVEME: We use Imgui right?
 
 		float time = (float)((bx::getHPCounter() - m_timeOffset) / double(bx::getHPFrequency()));
-
-
-		//TODO: Remove this, it's just for testing
-		debugRenderer->AddLine({ 0, 0, -15 }, { sin(time) * 5, cos(time) * 5, -15 });
-		debugRenderer->AddLine({ -6, 0, -15 }, { sin(time) * 5 - 6, cos(time) * 5, -15 }, 0, 0xFF0000FF);
-		debugRenderer->AddLine({ 0, 6, -15 }, { sin(time) * 5, cos(time) * 5 + 6, -15 }, 0, 0xFF0000FF);
-		debugRenderer->AddLine({ 0, -6, -15 }, { sin(time) * 5, cos(time) * 5 - 6, -15 }, 0, 0xFF0000FF);
 
 		//Do the debug drawing
 		debugRenderer->Render();
