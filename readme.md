@@ -75,7 +75,10 @@ Please download the [Clang Format VS Extension](https://marketplace.visualstudio
 
 - [Maiko Steeman](https://maikosteeman.dev/) Production, Engine Core Architecture & Graphics Programming
 - [Marjolein Kaal](http://www.marjoleinkaal.com/) AI,Level Generation & Gameplay Systems
-- [Simon Renger](https://simonrenger.com/) Network Architecture, Engine Architecture & QA Engineer 
+- [Simon Renger](https://simonrenger.com/) Network Architecture*, Engine Architecture & QA Engineer 
 - [Hannes Vernooij](https://www.hannesvernooij.com/) Gameplay Systems & Graphics Programming
 
 Supervisor and special thanks go to [Bojan Endrovski](https://www.linkedin.com/in/bojanendrovski/)
+
+
+* The project has been redirected and the network aspect has been changed.
