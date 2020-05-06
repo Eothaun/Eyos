@@ -3,20 +3,6 @@ target_compile_definitions(glm INTERFACE GLM_FORCE_EXPLICIT_CTOR)
 # Uncomment below if you want GLM debug messages about available features
 # target_compile_definitions(glm INTERFACE GLM_FORCE_MESSAGES=1)
 
-set(BUILD_SHARED On)
-
-add_subdirectory(enet)
-
-# override the enet settings:
-
-set_target_properties( enet
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/libs"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/libs"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/bin"
-)
-
-
 add_subdirectory(Catch2)
 
 add_subdirectory(bgfx.cmake)

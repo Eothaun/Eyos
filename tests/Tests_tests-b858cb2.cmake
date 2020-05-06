@@ -1,5 +1,0 @@
-add_test( [==[Factorial of 0 is 1 (fail)]==] /mnt/d/git/Eyos/tests/Tests [==[Factorial of 0 is 1 (fail)]==])
-set_tests_properties( [==[Factorial of 0 is 1 (fail)]==] PROPERTIES WORKING_DIRECTORY /mnt/d/git/Eyos/tests)
-add_test( [==[Factorials of 1 and higher are computed (pass)]==] /mnt/d/git/Eyos/tests/Tests [==[Factorials of 1 and higher are computed (pass)]==])
-set_tests_properties( [==[Factorials of 1 and higher are computed (pass)]==] PROPERTIES WORKING_DIRECTORY /mnt/d/git/Eyos/tests)
-set( Tests_TESTS [==[Factorial of 0 is 1 (fail)]==] [==[Factorials of 1 and higher are computed (pass)]==])

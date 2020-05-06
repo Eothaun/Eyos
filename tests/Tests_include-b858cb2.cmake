@@ -1,5 +1,0 @@
-if(EXISTS "/mnt/d/git/Eyos/tests/Tests_tests-b858cb2.cmake")
-  include("/mnt/d/git/Eyos/tests/Tests_tests-b858cb2.cmake")
-else()
-  add_test(Tests_NOT_BUILT-b858cb2 Tests_NOT_BUILT-b858cb2)
-endif()

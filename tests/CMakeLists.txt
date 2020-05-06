@@ -1,8 +1,6 @@
 #find_package(Catch2 REQUIRED)
 add_executable(Tests 
 main.cpp
-packet_tests.cpp
-stream_tests.cpp
 )
 target_include_directories(Tests
     PRIVATE 

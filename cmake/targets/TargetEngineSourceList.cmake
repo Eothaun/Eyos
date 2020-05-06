@@ -4,16 +4,6 @@ target_sources_local(Engine
     engine/ecs/EntityId.cpp
     engine/Terrain.cpp
     engine/Time.cpp
-    engine/net/Address.cpp
-    engine/net/Net.cpp
-    engine/net/Peer.cpp
-    engine/net/Host.cpp
-    engine/net/Packet.cpp
-    engine/net/NetEventHandler.cpp
-    engine/net/Common.cpp
-    engine/net/streams/InputStream.cpp
-    engine/net/streams/OutputStream.cpp
-    engine/net/Allocator.cpp
     engine/gen/PerlinNoise.cpp
     engine/gen/Image.cpp
     engine/gen/MapGeneration.cpp
