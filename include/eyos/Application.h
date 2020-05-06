@@ -12,7 +12,7 @@ namespace eyos {
 	public:
 	public:
 		void Init(int _argc, char** _argv);
-		void Update();
+		void Gameloop();
 		void Shutdown();
 	private:
 		World<EyosEcs> world {};
