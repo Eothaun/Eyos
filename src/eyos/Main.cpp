@@ -17,7 +17,7 @@ int _main_(int _argc, char** _argv)
 	std::cout << "Running from: " << std::filesystem::current_path() << '\n';
 	eyos::Application app{};
 	app.Init(_argc, _argv);
-	app.Update();
+	app.Gameloop();
 	app.Shutdown();
 	return 0;
 }
