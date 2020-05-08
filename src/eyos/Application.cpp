@@ -58,48 +58,24 @@ void eyos::Application::Init(int _argc, char** _argv)
 
 void eyos::Application::Gameloop()
 {
-
-}
-
-////////// DEBUG //////////////
-static void DrawPerformanceGraphInImgui();
-static bool Bar(float _width, float _maxWidth, float _height, const ImVec4& _color);
-namespace cmps = eyos::rendering_components;
-void FillEcs(eyos::Ecs& ecs, Mesh* mesh, eyos::Material mat);
-eyos::RenderableTerrain GenTerrain(std::string path);
-void InputTests(const eyos::Input& input);
-void ImguiInput(const eyos::Input& input, const entry::MouseState& mouseState);
-///////// END DEBUG //////////////
-
-
-void eyos::Application::Update()
-{
-//>>>>>>> threaded_ecs
-	// create
+	// create camera
 	Camera camera{};
+	{
 	camera.position = { 0, 12, 35 };
 	camera.rotation = glm::quat{ glm::vec3{0.0, 0.0, 0.0} };
 	camera.farZ = setting::camera::farZ;
 	camera.fov = setting::camera::fov;
 	camera.nearZ = setting::camera::nearZ;
+	}
+
 	entry::MouseState mouseState{};
 	auto& inputManager = input.inputManager;
 	auto& keyboard = input.keyboard;
 	auto& mouse = input.mouse;
-//<<<<<<< HEAD
+
 	world.time.Initialize(setting::time::maxTimeStep, setting::time::maxSteps);
 	std::string path{ setting::terrain::path };
 	auto terrain{ std::move((GenTerrain(path))) };
-//=======
-
-	// DEBUG STUFF:
-	Mesh* bunnyMesh = meshLoad(/*"meshes/Swordsman2.bin"*/ "meshes/Knight.bin");
-	Material testMaterial{};
-	FillEcs(world.ecs, bunnyMesh, testMaterial);
-	auto terrain{ std::move((GenTerrain("../data/maps/"))) };
-
-	world.time.Initialize(0.0333,6);
->>>>>>> threaded_ecs
 	while (true)
 	{
 		inputManager.Update();
