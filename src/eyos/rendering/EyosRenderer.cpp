@@ -156,7 +156,7 @@ namespace eyos {
 		}
 	}
 
-	void Renderer::RenderWorld(EyosEcs& ecs, Camera& camera)
+	void Renderer::RenderWorld(Ecs& ecs, Camera& camera)
 	{
 		RenderModels(ecs);
 		RenderInstancedModels(ecs);
@@ -197,7 +197,7 @@ namespace eyos {
 		return true;
 	}
 
-	void Renderer::RenderModels(EyosEcs& ecs) {
+	void Renderer::RenderModels(Ecs& ecs) {
 		float time = (float)((bx::getHPCounter() - m_timeOffset) / double(bx::getHPFrequency()));
 
 		std::vector<EntityId> entityModels = ecs.QueryEntities<rendering_components::Transform, rendering_components::Model3D>();
@@ -237,7 +237,7 @@ namespace eyos {
 		}
 	}
 
-	void Renderer::RenderInstancedModels(EyosEcs& ecs) {
+	void Renderer::RenderInstancedModels(Ecs& ecs) {
 		float time = 0;
 
 		// 80 bytes stride = 64 bytes for 4x4 matrix + 16 bytes for RGBA color.

@@ -1,6 +1,8 @@
 #pragma once
 #include <type_traits>
 #include <cstdint>
+#include <utility>
+
 #include "engine/Defines.h"
 
 
@@ -77,5 +79,26 @@ namespace eyos {
 		static TemplateTypeId templateTypeId = ++typeIdCounter;
 
 		return templateTypeId;
+	}
+
+	template<typename T>
+	void DeconstructThing(void* ptr) {
+		reinterpret_cast<T*>(ptr)->~T();
+	}
+
+	template<typename T>
+	void ConstructThing(void* ptr) {
+		new (ptr) T();
+	}
+
+	template<typename T>
+	void MoveThing(void* to, void* from) {
+		*reinterpret_cast<T*>(to) = std::move(*reinterpret_cast<T*>(from));
+	}
+
+	template<typename T1, typename T2>
+	void SwapThings(void* a, void* b)
+	{
+		std::swap(*reinterpret_cast<T1*>(a), *reinterpret_cast<T2*>(b));
 	}
 }

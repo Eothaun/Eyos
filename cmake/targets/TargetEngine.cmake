@@ -10,6 +10,7 @@ target_link_libraries(Engine
     PUBLIC
     glm
     eventpp
+	flat.hpp
 )
 
 target_include_directories(Engine

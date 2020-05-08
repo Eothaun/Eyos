@@ -46,15 +46,35 @@ void eyos::Application::Init(int _argc, char** _argv)
 	entry::setWindowSize(windowHandle, width, height);
 	input.Init(width, height);
 	g_inputManager = &input.inputManager;
+
 #if BX_PLATFORM_WINDOWS
 		entry::SetNativeMessageCallback(&ProcessMessage<MSG>); 
 #elif BX_PLATFORM_BSD || BX_PLATFORM_LINUX || BX_PLATFORM_RPI
 		entry::SetNativeMessageCallback(&ProcessMessage<XEvent>);//FIXME: why does this not work under Linux?
 #endif
+
+	RegisterClientEcsTypes(world.ecs);
 }
 
 void eyos::Application::Gameloop()
 {
+
+}
+
+////////// DEBUG //////////////
+static void DrawPerformanceGraphInImgui();
+static bool Bar(float _width, float _maxWidth, float _height, const ImVec4& _color);
+namespace cmps = eyos::rendering_components;
+void FillEcs(eyos::Ecs& ecs, Mesh* mesh, eyos::Material mat);
+eyos::RenderableTerrain GenTerrain(std::string path);
+void InputTests(const eyos::Input& input);
+void ImguiInput(const eyos::Input& input, const entry::MouseState& mouseState);
+///////// END DEBUG //////////////
+
+
+void eyos::Application::Update()
+{
+//>>>>>>> threaded_ecs
 	// create
 	Camera camera{};
 	camera.position = { 0, 12, 35 };
@@ -66,9 +86,20 @@ void eyos::Application::Gameloop()
 	auto& inputManager = input.inputManager;
 	auto& keyboard = input.keyboard;
 	auto& mouse = input.mouse;
+//<<<<<<< HEAD
 	world.time.Initialize(setting::time::maxTimeStep, setting::time::maxSteps);
 	std::string path{ setting::terrain::path };
 	auto terrain{ std::move((GenTerrain(path))) };
+//=======
+
+	// DEBUG STUFF:
+	Mesh* bunnyMesh = meshLoad(/*"meshes/Swordsman2.bin"*/ "meshes/Knight.bin");
+	Material testMaterial{};
+	FillEcs(world.ecs, bunnyMesh, testMaterial);
+	auto terrain{ std::move((GenTerrain("../data/maps/"))) };
+
+	world.time.Initialize(0.0333,6);
+>>>>>>> threaded_ecs
 	while (true)
 	{
 		inputManager.Update();
@@ -85,7 +116,7 @@ void eyos::Application::Gameloop()
 		}
 		camera.DoMovement(.5f, 0.01f, mouseState);
 		renderer.BeginRender(camera);
-		renderer.RenderWorld(world.esc, camera);
+		renderer.RenderWorld(world.ecs, camera);
 		terrain.generatedMesh->submit(0, renderer.GetMeshShaderProgram(), glm::value_ptr(glm::mat4{ 1.0f }), BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP);
 		renderer.EndRender();
 		imguiEndFrame();
@@ -95,7 +126,8 @@ void eyos::Application::Gameloop()
 
 void eyos::Application::Shutdown()
 {
-	assertm(renderer.Shutdown(), "Failed to shutdown!");
+	bool shutdownResult = renderer.Shutdown();
+	assertm(shutdownResult, "Failed to shutdown!");
 }
 
 

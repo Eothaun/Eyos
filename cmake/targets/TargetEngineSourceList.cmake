@@ -2,6 +2,7 @@ target_sources_local(Engine
     PRIVATE
     engine/Eyos.cpp
     engine/ecs/EntityId.cpp
+    engine/ecs/MTP_Utils.cpp
     engine/Terrain.cpp
     engine/Time.cpp
     engine/gen/PerlinNoise.cpp
