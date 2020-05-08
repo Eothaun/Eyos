@@ -23,9 +23,5 @@ jobs:
       run: cd build && make -j4 tools && make -j4 texturec && make -j4 texturev && make -j4 shaderc && make -j4 geometryc
     - name: make Engine
       run: cd build && make clean && make -j4 Engine
-    - name: make DedicatedServer
-      run: cd build && make -j4 EyosDedicatedServer
-    - name: make LobbyServer
-      run: cd build && make -j4 EyosLobbyServer
     - name: make Eyos
       run: cd build && make -j4 Eyos
