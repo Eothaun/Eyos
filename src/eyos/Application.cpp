@@ -28,13 +28,19 @@
 */
 static gainput::InputManager* g_inputManager{ nullptr };
 
-template<typename T>
-static bool ProcessMessage(T& msg)
+#if BX_PLATFORM_WINDOWS
+static bool ProcessMessage(MSG& msg)
 {
 	g_inputManager->HandleMessage(msg);
 	return false;
 }
-
+#elif BX_PLATFORM_BSD || BX_PLATFORM_LINUX || BX_PLATFORM_RPI
+static bool ProcessMessage(XEvent& msg)
+{
+	g_inputManager->HandleEvent(msg);	
+	return false;
+}
+#endif
 void imguiNewFrame(const eyos::Input& input, const entry::MouseState& mouseState, uint16_t width, uint16_t height);
 
 eyos::RenderableTerrain GenTerrain(std::string path);
@@ -46,12 +52,8 @@ void eyos::Application::Init(int _argc, char** _argv)
 	entry::setWindowSize(windowHandle, width, height);
 	input.Init(width, height);
 	g_inputManager = &input.inputManager;
+	entry::SetNativeMessageCallback(&ProcessMessage);//FIXME: why does this not work under Linux?
 
-#if BX_PLATFORM_WINDOWS
-		entry::SetNativeMessageCallback(&ProcessMessage<MSG>); 
-#elif BX_PLATFORM_BSD || BX_PLATFORM_LINUX || BX_PLATFORM_RPI
-		entry::SetNativeMessageCallback(&ProcessMessage<XEvent>);//FIXME: why does this not work under Linux?
-#endif
 
 	RegisterClientEcsTypes(world.ecs);
 }
