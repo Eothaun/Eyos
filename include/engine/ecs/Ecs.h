@@ -12,16 +12,11 @@
 #include "EntityId.h"
 #include "MTP_Utils.h"
 #include "ComponentArray.h"
+#include "EcsBuiltinComponents.h"
 
 
 namespace eyos
 {
-	namespace ecs_builtins {
-		struct EcsTrackable {};
-
-		static_assert(std::is_empty_v<EcsTrackable>, "The ecs depends on this being a 0 size struct");
-	}
-
 	//! Generic Ecs class with a compile time switch to enable Tracking of entities
 	//! Usually, just use the Alias `Ecs`
 	template<bool EcsTrackable>
