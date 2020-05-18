@@ -67,6 +67,12 @@ namespace eyos {
 	template<typename T>
 	using MakeRefARefWrapper_t = typename MakeRefARefWrapper<T>::type;
 
+	template<typename T>
+	MakeRefARefWrapper_t<T> make_ref_a_ref_wrapper(T&& t)
+	{
+		return MakeRefARefWrapper_t<T>{t};
+	}
+
 	using TemplateTypeId = uint32_t;
 	
 	constexpr TemplateTypeId g_invalidTemplateTypeId = 0;

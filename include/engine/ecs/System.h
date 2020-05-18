@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <tuple>
 #include <vector>
+
+#include "Ecs.h"
 #include "EntityId.h"
 
 namespace eyos
@@ -184,6 +186,31 @@ namespace eyos
 			});
 		}
 	};
+
+	template<typename... TCmps>
+	void FillQuery(ComponentQuery<TCmps...>& query, Ecs& ecs)
+	{
+		query.entityIds = ecs.QueryEntities<TCmps...>();
+		const auto entityAmount = query.entityIds.size();
+		query.resize(entityAmount);
+
+		(FillQuerySpecificComponent<TCmps>(query, ecs),...);
+	}
+
+	template<typename TCmp, typename... TCmps>
+	void FillQuerySpecificComponent(ComponentQuery<TCmps...>& query, Ecs& ecs)
+	{
+		constexpr auto cmpIndexInQuery = get_index_in_pack<TCmp, TCmps...>;
+		static_assert(cmpIndexInQuery != -1, "Type TCmp is not found in the query!");
+		auto& componentArray = std::get<cmpIndexInQuery>(query.componentArrays);
+
+		const auto entityAmount = query.entityIds.size();		
+		for(int i = 0; i < entityAmount; ++i)
+		{
+			//TODO: Make references work
+			componentArray[i] = make_ref_a_ref_wrapper( ecs.Get<TCmp>(query.entityIds[i]) );
+		}
+	}
 	
 	class ISystem
 	{
@@ -256,14 +283,15 @@ namespace eyos
 	}
 
 	template <typename TDerived>
-	void System<TDerived>::UpdateWithWorld(World& entities)
+	void System<TDerived>::UpdateWithWorld(World& world)
 	{
 		static_assert(std::is_base_of_v<System<TDerived>, TDerived>, "The CRTP needs to be the system which inherits from `System<Itself>`");
 
 		SystemComponentQuery query{};
+		FillQuery(query, world);
 
 		//TODO: This is not really safe right? how can I test this
-		reinterpret_cast<TDerived*>(this)->Update(std::ref(query));
+		reinterpret_cast<TDerived*>(this)->Update((query));
 	}
 
 	class SystemScheduler
@@ -296,7 +324,7 @@ namespace eyos
 			}
 		}
 
-		//! \NOTE During this function, parameter t will be deleted. 
+		//! \NOTE During this function, parameter t will be deleted. As the scheduler owns the systems
 		template<typename T>
 		void DestroySystem(T* t)
 		{
